@@ -1,3 +1,10 @@
+;; ZINC is Not CP/M
+;;
+;; CP/M compatibility layer for Agon's MOS
+;; (c) 2024 Aleksandr Sharikhin
+;;
+;; All rights are reserved
+
     ASSUME ADL=1
 ;; Why?
 MAX_ARGS: EQU 15
@@ -55,6 +62,10 @@ _start:
     ld hl, path_buffer
     ld a, $01 ; mos_load
     rst.lil $08
+    or a
+    jp nz, open_error
+
+    call prepare_fcb
 
 ;;  emulation layer
     ld a, $5
@@ -73,14 +84,24 @@ exit:
 
 no_args:
     ld hl, @msg
+    jr error
+@msg:
+    db 13, 10, "Usage: ", 13, 10
+    db "  runcpm <executable> <args>", 13, 10, 0
+
+open_error:
+    ld hl, @msg
+    jr error
+@msg:
+    db 13, 10
+    db "Cannot read executable file!"
+    db 13, 10, 0
+
+error:
     ld bc, 0
     xor a
     rst.lil $18
     jr exit
-
-@msg:
-    db 13, 10, "Usage: ", 13, 10
-    db "  runcpm <executable> <args>", 13, 10, 0
 
 _parse_args:
 	call _skip_spaces
@@ -134,13 +155,16 @@ _skip_spaces:
 	ret nz
 	inc hl
 	jr _skip_spaces
+
 ext:
     db ".com",0
+
 path_buffer:
-    ds $ff
+    ds 13
 
 stack_save:  dl 0
 
+    include "cpm-data.asm"
 
     align $10000
     incbin "edos/test.bin"

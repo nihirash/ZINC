@@ -1,3 +1,8 @@
+;; EBIOS - Emulation BIOS. BIOS emulation layer for ZINC
+;; (c) 2024 Aleksandr Sharikhin
+;;
+;; All rights are reserved
+
     include "ebios/macro.asm"
 
 BOOT:	JP	bye		
@@ -40,6 +45,11 @@ direct:
 init:
     ld sp, $ffff
 
+    ld hl, banner
+    ld bc, 0
+    xor a
+    rst.lil $18
+
     MOSCALL MOS_SYS_VARS
     lea.lil hl, ix + 5 ;; ASCII KEYCODE
     ld.lil (keycode_ptr+$50000), hl
@@ -65,6 +75,12 @@ init:
 
     call TPA
     jp.lil $40004
+
+banner:
+    db 13,10
+    db "ZINC is Not CP/M", 13, 10
+    db "(c) 2024 Aleksandr Sharikhin", 13, 10
+    db 13, 10, 0
 
     include "ebios/console.asm"
     include "ebios/disk.asm"

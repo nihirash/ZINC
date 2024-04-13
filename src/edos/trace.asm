@@ -1,3 +1,9 @@
+;; EDOS - Emulation DOS. BDOS emulation layer for ZINC
+;; (c) 2024 Aleksandr Sharikhin
+;;
+;; All rights are reserved
+
+;;; This trace placeholder allows detect necessary for applications entrypoints
 trace:
     ld a, (fun)
     call num_to_hex

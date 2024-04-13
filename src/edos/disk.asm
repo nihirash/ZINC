@@ -1,3 +1,7 @@
+;; EDOS - Emulation DOS. BDOS emulation layer for ZINC
+;; (c) 2024 Aleksandr Sharikhin
+;;
+;; All rights are reserved
 
 get_drives:
     ld hl,1

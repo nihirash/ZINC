@@ -74,8 +74,8 @@ fun_table:
     dw read_buf      ; 10  Buffered read
     dw CONST         ; 11  Console status
     dw dos_ver       ; 12  CP/M Version
-    dw trace         ; 13  Reset disks
-    dw trace         ; 14  Set drive
+    dw do_nothing    ; 13  Reset disks
+    dw do_nothing    ; 14  Set drive
     dw trace         ; 15  fopen
     dw trace         ; 16  fclose
     dw trace         ; 17  First in directory

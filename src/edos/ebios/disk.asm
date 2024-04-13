@@ -1,3 +1,8 @@
+;; EBIOS - Emulation BIOS. BIOS emulation layer for ZINC
+;; (c) 2024 Aleksandr Sharikhin
+;;
+;; All rights are reserved
+
 bios_seldsk:
     ld hl, dph
     ret
@@ -14,6 +19,7 @@ dph:
     dw 0
     dw 0
 
+;; Almost random data - no direct disk operations will be allowed anyway
 dpb:
     dw 64
     db 4
