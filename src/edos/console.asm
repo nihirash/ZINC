@@ -69,3 +69,48 @@ write_str:
     pop bc
     
     jr @w
+
+;; Using MOS routines for line editing 
+read_buf:
+    ld a, d
+    or e
+    jr nz, @read
+
+    ld de, (dma_ptr)
+@read: 
+    ex de, hl
+    ld a, (hl)
+
+    ld bc, 2
+    add hl, bc
+    
+    ld b, 0
+    ld c, a
+
+    ld e, 1
+    MOSCALL MOS_EDIT_LINE
+    
+    push hl
+    ld a, CR
+    rst.lil $10
+    pop hl
+
+    push hl
+    ld e, 0
+@strlen:
+    ld a, (hl)
+    or a
+    jr z, @done
+    inc e
+    inc hl
+    jr @strlen
+@done:
+    ld a, e
+    pop hl
+
+    dec hl
+    ld (hl), a
+    
+    ld d, 0
+    ret
+

@@ -66,8 +66,6 @@ init:
     call TPA
     jp.lil $40004
 
-
-    include "ebios/mos.asm"
     include "ebios/console.asm"
     include "ebios/disk.asm"
 
