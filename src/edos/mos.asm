@@ -1,3 +1,8 @@
+;; EDOS - Emulation DOS. BDOS emulation layer for ZINC
+;; (c) 2024 Aleksandr Sharikhin
+;;
+;; All rights are reserved
+
     macro MOSCALL func
     ld a, func
     rst.lil $08

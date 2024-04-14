@@ -1,5 +1,7 @@
 ;; EDOS - Emulation DOS. BDOS emulation layer for ZINC
 ;; (c) 2024 Aleksandr Sharikhin
+;;
+;; All rights are reserved
 
 ;; CP/M 2.2 is $22
 ;; Personal CP/M-80 is $28

@@ -1,3 +1,4 @@
+;; Useless file just for testing
     ASSUME ADL=0
 
     org $0000

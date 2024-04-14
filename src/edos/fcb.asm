@@ -1,3 +1,8 @@
+;; EDOS - Emulation DOS. BDOS emulation layer for ZINC
+;; (c) 2024 Aleksandr Sharikhin
+;;
+;; All rights are reserved
+
 FCB_CR: equ $20  ; Current record
 FCB_EX: equ $0c  ; Current record extend 
 FCB_S2: equ $0e  ; Extend high byte

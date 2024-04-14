@@ -6,7 +6,7 @@
 ;; All rights are reserved
 
     ASSUME ADL=1
-;; Why?
+;; Why? Because I can
 MAX_ARGS: EQU 15
 
     org $40000
