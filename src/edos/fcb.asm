@@ -64,9 +64,6 @@ ascciz_to_fcb:
     cp '.'
     jr z, @fill_zeros
 
-    cp '*'
-    jp z, @fill_mask
-
     call uppercase
     ld (de), a
 
@@ -95,9 +92,6 @@ ascciz_to_fcb:
     and #7f
     jr z, @fin
 
-    cp '*'
-    jr z, @fill_mask2
-
     call uppercase
     ld (de), a
     inc hl
@@ -112,28 +106,6 @@ ascciz_to_fcb:
     ld (de), a
     inc de
     djnz @fin_loop
-    ret
-@fill_mask:
-    inc hl
-    ld a, b
-    or a
-    jr z, @ext_copy
-    ld a, '?'
-@mask_loop:
-    ld (de), a
-    inc de
-    djnz @mask_loop
-    jr  @ext_copy
-
-@fill_mask2:
-    ld a, b
-    or a
-    jr z, @ext_copy
-    ld a, '?'
-@mask_loop2:
-    ld (de), a
-    inc de
-    djnz @mask_loop2
     ret
 
 dos_name:

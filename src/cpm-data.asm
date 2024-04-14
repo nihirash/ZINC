@@ -14,11 +14,6 @@ prepare_vars:
     ld bc, 16
     ldir
 
-    ld de, BUFF
-    xor a 
-    ld (de), a
-    inc de
-    
     ld a, (argc)
     dec a
     ret z
@@ -30,15 +25,21 @@ prepare_vars:
     ld a, (argc)
     dec a
     dec a
-    ret z
+    jr z, @skip_fcb2
 
     ld hl, (argv + 6)
     ld de, FCB + 16
     call ascciz_to_fcb
 
+@skip_fcb2:
     ld a, (argc)
     dec a
     ld b, a
+    
+    ld de, BUFF
+    xor a 
+    ld (de), a
+    inc de
     
     ld ix, argv + 3
 @copy1:
@@ -102,6 +103,9 @@ ascciz_to_fcb:
     cp '*'
     jp z, @fill_mask
 
+    cp ':'
+    ret z
+
     call uppercase
     ld (de), a
 
@@ -148,6 +152,7 @@ ascciz_to_fcb:
     inc de
     djnz @fin_loop
     ret
+
 @fill_mask:
     inc hl
     ld a, b
@@ -183,7 +188,6 @@ uppercase:
 
 fcb_template:
     db 0    ; Drive
-    db "           "
     db "           "
     db 0, 0, 0, 0
 
