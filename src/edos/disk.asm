@@ -62,14 +62,16 @@ catalog_scan_next:
     cp '?'
     jr z, @masked
 
-    ld a, b
+    ld c, a
     ld a, (de)
-    cp b
-    jr nz, nope
+    cp c
+
+    jr nz, catalog_scan_next
 @masked:
     inc hl
     inc de
     djnz @chk_msk
+
     jr scan_ok
 
 nope:
