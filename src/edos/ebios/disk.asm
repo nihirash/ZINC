@@ -12,22 +12,21 @@ bios_dma:
     ret
 
 dph:
-    dw 0
-    dw 0, 0, 0
-    dw dir
-    dw dpb
-    dw 0
-    dw 0
+    dw 0, 0, 0, 0, dir, dpb, 0, 0
 
 ;; Almost random data - no direct disk operations will be allowed anyway
+;; I've used from Agon's CP/M 2.2
 dpb:
-    dw 64
-    db 4
-    db 15
-    dw $ffff
-    dw $1023
-    db $ff, 0
-    db 0, 0, 0, 0
+    dw	64	    ;sectors per track
+    db	6		;block shift factor
+    db	63		;block mask
+    db	3   	;null mask
+    dw	1023	;disk size-1
+    dw	2047 	;directory max
+    db	$ff		;alloc 0
+    db	0		;alloc 1
+    dw	0	    ;check size - don't care about it - SD card isn't removable
+    dw	0	    ;track offset
 
 
 dir:

@@ -45,6 +45,8 @@ direct:
 init:
     ld sp, $ffff
 
+    call init_dir
+
     ld hl, banner
     ld bc, 0
     xor a
@@ -53,8 +55,10 @@ init:
     MOSCALL MOS_SYS_VARS
     lea.lil hl, ix + 5 ;; ASCII KEYCODE
     ld.lil (keycode_ptr+$50000), hl
-
+    ;; Cleaning last keypress on start - no waiting for key on start of some apps 
     xor a
+    ld.lil (hl), a
+
     ld (TDRIVE), a
 
     ld a, $c3 ;; JP instruction
@@ -86,7 +90,7 @@ banner:
     include "ebios/disk.asm"
 
 keycode_ptr:
-    ds 3
+    dl 0
 
 user_sp_ptr:
     dw $00

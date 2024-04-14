@@ -3,5 +3,5 @@
     org $0000
     jp init
 
-    ds $F500 - $
+    ds $F000 - $
     include "core.asm"

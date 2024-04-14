@@ -6,3 +6,9 @@
 MOS_GET_KEY:    equ     $00
 MOS_SYS_VARS:   equ     $08
 MOS_EDIT_LINE:  equ     $09
+
+MOS_OPENDIR:    equ     $91
+MOS_CLOSEDIR:   equ     $92
+MOS_READDIR:    equ     $93
+
+MOS_CWD:        equ     $9e

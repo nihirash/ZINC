@@ -65,7 +65,7 @@ _start:
     or a
     jp nz, open_error
 
-    call prepare_fcb
+    call prepare_vars
 
 ;;  emulation layer
     ld a, $5
