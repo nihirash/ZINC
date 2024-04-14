@@ -45,6 +45,7 @@ catalog_scan_next:
     ld a, (mask)
     cp '?'
     jr z, scan_ok
+    ;; TODO scan mask check
     jp scan_ok
 
 nope:
