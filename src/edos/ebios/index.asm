@@ -58,7 +58,7 @@ init:
     ;; Cleaning last keypress on start - no waiting for key on start of some apps 
     xor a
     ld.lil (hl), a
-
+    xor a
     ld (TDRIVE), a
 
     ld a, $c3 ;; JP instruction
@@ -81,9 +81,9 @@ init:
     jp.lil $40004
 
 banner:
-    db 13,10
-    db "ZINC is Not CP/M", 13, 10
-    db "(c) 2024 Aleksandr Sharikhin", 13, 10
+    db 13,10, 17, 1
+    db "ZINC is Not CP/M", 13, 10,  17, 2
+    db "(c) 2024 Aleksandr Sharikhin", 13, 10, 17, 15
     db 13, 10, 0
 
     include "ebios/console.asm"
@@ -95,6 +95,6 @@ keycode_ptr:
 user_sp_ptr:
     dw $00
 
-    ds 64
+    ds 32
 bios_stack:
 

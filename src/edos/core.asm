@@ -138,5 +138,5 @@ user_stk:   dw $00
     align $100
     include "ebios/index.asm"
 
-    ds $100
+    ds $7f
 stack:

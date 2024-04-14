@@ -79,8 +79,17 @@ exit:
     pop ix
 
     xor a
+    ld mb, a
+
+    ld hl, exit_msg
+    ld bc, 4
+    rst.lil $18
+
+    xor a
     ld hl, 0
     ret
+exit_msg:
+    db 13, 10, 13, 10
 
 no_args:
     ld hl, @msg
@@ -93,15 +102,15 @@ open_error:
     ld hl, @msg
     jr error
 @msg:
-    db 13, 10
-    db "Cannot read executable file!"
+    db 13, 10, 17, 1
+    db "Cannot read executable file!", 17, 15
     db 13, 10, 0
 
 error:
     ld bc, 0
     xor a
     rst.lil $18
-    jr exit
+    jp exit
 
 _parse_args:
 	call _skip_spaces
