@@ -55,10 +55,10 @@ init:
     MOSCALL MOS_SYS_VARS
     lea.lil hl, ix + 5 ;; ASCII KEYCODE
     ld.lil (keycode_ptr+$50000), hl
-    ;; Cleaning last keypress on start - no waiting for key on start of some apps 
+
+;; Cleaning last keypress on start - no waiting for key on start of some apps 
     xor a
     ld.lil (hl), a
-    xor a
     ld (TDRIVE), a
 
     ld a, $c3 ;; JP instruction

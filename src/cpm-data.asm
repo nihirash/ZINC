@@ -11,6 +11,7 @@ BUFF:   equ $50080
 ;; Prepare system vars on start application
 ;; Reimplements CCP behavior
 prepare_vars:
+;; Preparing FCB entities
     ld hl, fcb_template
 
     push hl
@@ -25,7 +26,7 @@ prepare_vars:
     ld a, (argc)
     dec a
     ret z
-
+;; Filling FCB with masked filenames
     ld hl, (argv + 3)
     ld de, FCB
     call ascciz_to_fcb
@@ -43,7 +44,8 @@ prepare_vars:
     ld a, (argc)
     dec a
     ld b, a
-    
+
+;; Preparing input line in DMA buffer     
     ld de, BUFF
     xor a 
     ld (de), a

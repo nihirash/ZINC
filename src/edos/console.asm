@@ -43,9 +43,7 @@ raw_io:
     call CONST
     or a
     ret z
-
-    call CONIN
-    ret
+    jp CONIN
 
 
 get_io_byte:
@@ -54,7 +52,7 @@ get_io_byte:
 
 set_io_byte:
     ld a, c
-    ld (IOBYTE),a
+    ld (IOBYTE), a
     ret
 
 ;; Why not use MOS function?
