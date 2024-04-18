@@ -1,3 +1,4 @@
+;; I wish I'll have possibility doesn't include this part to final binary :-)
 
 dir:
     ds 128
