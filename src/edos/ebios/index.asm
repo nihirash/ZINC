@@ -37,9 +37,11 @@ direct:
     rst.lil $18
     xor a
     RESTORESP
-    ret
+    jp bye
 @msg:
-    db 13, 10, "Unsupported direct BIOS call happens", 13, 10, 0
+    db 13, 10
+    db "Unsupported direct BIOS call happens!", 13, 10
+    db "Execution stopped", 13, 10, 0
 
 
 init:
@@ -82,7 +84,7 @@ init:
 
 banner:
     db 13,10, 17, 1
-    db "ZINC is Not CP/M", 13, 10,  17, 2
+    db "ZINC is Not CP/M", 13, 10, 17, 2
     db "(c) 2024 Aleksandr Sharikhin", 13, 10, 17, 15
     db 13, 10, 0
 
@@ -95,6 +97,4 @@ keycode_ptr:
 user_sp_ptr:
     dw $00
 
-    ds 32
-bios_stack:
 

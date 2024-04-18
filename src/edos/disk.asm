@@ -12,7 +12,7 @@ get_drive:
     ret
 
 set_dma:
-    ld (dma_ptr),de
+    ld (dma_ptr), de
     ret
 
 get_dpb:
@@ -138,23 +138,106 @@ init_dir:
     ld hl, dir_struct
     ld de, path_buffer
     MOSCALL MOS_OPENDIR
-
     ret
 
-tmp_fcb:
-    ds $10
+fopen:
+    ex de, hl
+    push hl
+    call fcb_to_asciiz_name
+    ld hl, dos_name
+    ld c, FA_READ + FA_WRITE
+    MOSCALL MOS_FOPEN
 
-path_buffer:
-    ds $7f
+    or a
+    jr z, @err
+    pop hl
+    ld de, FCB_S1
+    add hl, de
+    ld (hl), a
 
-DS_LEN: equ 31
-dir_struct:
-    ds DS_LEN
+    xor a
+    ret
+@err:
+    pop hl
+    ld a, #ff
+    ret
 
-ffs_file_struct:
-ffs_size:   ds  4
-ffs_date:   ds  2
-ffs_time:   ds  2
-ffs_attr:   ds  1
-ffs_name:   ds  13
-ffs_lfn:    ds  256
+
+fcreate:
+    ex de, hl
+    push hl
+    call fcb_to_asciiz_name
+    ld hl, dos_name
+    ld c, FA_READ + FA_WRITE + FA_CREATE
+    MOSCALL MOS_FOPEN
+
+    or a
+    jr z, @err
+    pop hl
+    ld de, FCB_S1
+    add hl, de
+    ld (hl), a
+
+    xor a
+    ret
+@err:
+    pop hl
+    ld a, #ff
+    ret
+
+fclose:
+    ld hl, FCB_S1
+    add hl, de
+    ld a, (hl)
+    ld c, a
+    MOSCALL MOS_FCLOSE
+    ret
+
+fdelete:
+    ex de, hl
+    call fcb_to_asciiz_name
+    ld hl, dos_name
+    MOSCALL MOS_DELETE
+    ret
+
+fwrite:
+    ld hl, FCB_S1
+    add hl, de
+    ld a, (hl)
+    ld c, a
+
+    ld.lil hl, ($50000 + dma_ptr)
+    ld de, 128
+    MOSCALL MOS_FWRITE
+    
+    ld hl, (args)
+    ld bc, FCB_CR
+    add hl, bc
+    inc (hl)
+
+    xor a
+    ret
+
+fread:
+    ld hl, FCB_S1
+    add hl, de
+    ld a, (hl)
+    ld c, a
+
+    ld.lil hl, ($50000 + dma_ptr)
+    ld de, 128
+    MOSCALL MOS_FREAD
+
+    ld a, d
+    or e
+    ld a, 1
+    ret z
+@ok:
+    ld hl, (args)
+    ld bc, FCB_CR
+    add hl, bc
+    inc (hl)
+
+    xor a
+    ret
+

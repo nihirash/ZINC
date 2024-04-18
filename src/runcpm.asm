@@ -35,7 +35,7 @@ _start:
 	ld a,c
 	ld (argc),a
     or a 
-    jr z, no_args
+    jp z, no_args
 
     ld hl, (argv)
     ld de, path_buffer
@@ -57,6 +57,13 @@ _start:
     ldi
     ldi
 
+    ;; Cleanup vars area
+    xor a 
+    ld hl, $50000
+    ld de, $50001
+    ld bc, $100
+    ld (hl), a
+    ldir
 
     ld de, $50100
     ld hl, path_buffer
@@ -67,12 +74,22 @@ _start:
 
     call prepare_vars
 
+    ld hl, os
+    ld de, $5f000
+    ld bc, end_of_os - os
+    ldir
+
 ;;  emulation layer
     ld a, $5
     ld mb, a
-    jp.sis $0
+    jp.sis $f003
 
 exit:
+    ;; Close all opened files
+    ld c, 0
+    ld a, 0x0b
+    rst.lil $08
+
     ld sp, (stack_save)
 
     pop iy
@@ -82,14 +99,16 @@ exit:
     ld mb, a
 
     ld hl, exit_msg
-    ld bc, 4
+    ld bc, 0
     rst.lil $18
 
     xor a
     ld hl, 0
     ret
 exit_msg:
-    db 13, 10, 13, 10
+    db 13, 10
+    db "Returning to MOS..."
+    db 13, 10, 13, 10, 0
 
 no_args:
     ld hl, @msg
@@ -156,6 +175,7 @@ _get_token:
 
 	inc hl
 	inc c
+    
 	jr @loop
 
 _skip_spaces:
@@ -175,5 +195,6 @@ stack_save:  dl 0
 
     include "cpm-data.asm"
 
-    align $10000
-    incbin "edos/test.bin"
+os:
+    incbin "edos/edos.bin"
+end_of_os:

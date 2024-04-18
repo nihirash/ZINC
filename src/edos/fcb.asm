@@ -6,6 +6,7 @@
 FCB_CR: equ $20  ; Current record
 FCB_EX: equ $0c  ; Current record extend 
 FCB_S2: equ $0e  ; Extend high byte
+FCB_S1: equ $0d  ; Reserved :-)
 
 ; Converts FCB to ASCIIz filename
 ; HL - FCB pointer

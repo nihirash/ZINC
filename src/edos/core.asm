@@ -26,6 +26,8 @@ LF:         equ $0A
 CR:         equ $0D
     
     include "mos.asm"
+    jp entrypoint
+    jp init
 
 ;; "BDOS" entrypoint - routing functions 
 entrypoint:
@@ -82,14 +84,14 @@ fun_table:
     dw dos_ver              ; 12  CP/M Version
     dw do_nothing           ; 13  Reset disks
     dw do_nothing           ; 14  Set drive
-    dw trace                ; 15  fopen
-    dw trace                ; 16  fclose
+    dw fopen                ; 15  fopen
+    dw fclose               ; 16  fclose
     dw catalog_get_first    ; 17  First in directory
     dw catalog_scan_next    ; 18  Next record in directory
-    dw trace                ; 19  Delete file
-    dw trace                ; 20  fread
-    dw trace                ; 21  fwrite
-    dw trace                ; 22  fcreate
+    dw fdelete              ; 19  Delete file
+    dw fread                ; 20  fread
+    dw fwrite               ; 21  fwrite
+    dw fcreate              ; 22  fcreate
     dw trace                ; 23  frename
     dw get_drives           ; 24  bitmap of drives
     dw get_drive            ; 25  current drive
@@ -135,10 +137,9 @@ dos_ver:
 fun:        db $00
 args:       dw $00
 dma_ptr:    dw $00
+            db $05
 user_stk:   dw $00
 
     align $100
     include "ebios/index.asm"
-
-    ds $7f
-stack:
+    include "buffers.asm"

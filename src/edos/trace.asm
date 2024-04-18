@@ -21,12 +21,8 @@ trace:
     ld bc, 0
     xor a
     rst.lil $18
-    
-    xor a
-    ld l, a
-    ld h, a
 
-    ret
+    jp bye
 @msg:
     db 13, 10, "[!NOT IMPLEMENTED BDOS CALL!] Called function: "
 @fun:

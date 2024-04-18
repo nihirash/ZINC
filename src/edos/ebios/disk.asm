@@ -27,7 +27,3 @@ dpb:
     db	0		;alloc 1
     dw	0	    ;check size - don't care about it - SD card isn't removable
     dw	0	    ;track offset
-
-
-dir:
-    ds 128
