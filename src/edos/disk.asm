@@ -83,9 +83,9 @@ scan_ok:
     ld hl, ffs_lfn
     call ascciz_to_fcb
 
-;; Routine for calcing EX/RC
-;; Looks like working :) 
-;; Without promises
+;; Calculation file lenght 
+;; Routine works not very correct, but many CP/M emulators skip this step
+;; Honestly, not most necessary part of this project :-)
     xor a
     ld b, a
     
@@ -206,7 +206,7 @@ fwrite:
     ld a, (hl)
     ld c, a
 
-    ld.lil hl, ($50000 + dma_ptr)
+    ld.lil hl, (dma_ptr)
     ld de, 128
     MOSCALL MOS_FWRITE
     
@@ -224,7 +224,7 @@ fread:
     ld a, (hl)
     ld c, a
 
-    ld.lil hl, ($50000 + dma_ptr)
+    ld.lil hl, (dma_ptr)
     ld de, 128
     MOSCALL MOS_FREAD
 

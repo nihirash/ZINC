@@ -3,6 +3,8 @@
 ;;
 ;; All rights are reserved
 
+;; ----------------------------------------------------------------------------
+
 FCB_CR: equ $20  ; Current record
 FCB_EX: equ $0c  ; Current record extend 
 FCB_S2: equ $0e  ; Extend high byte
@@ -113,9 +115,6 @@ ascciz_to_fcb:
     inc de
     djnz @fin_loop
     ret
-
-dos_name:
-     ds 12
 
 uppercase:
     cp 'a'

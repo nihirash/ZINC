@@ -3,6 +3,8 @@
 ;;
 ;; All rights are reserved
 
+;; ----------------------------------------------------------------------------
+
 ;;; This trace placeholder allows detect necessary for applications entrypoints
 trace:
     ld a, (fun)

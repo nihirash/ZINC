@@ -5,8 +5,11 @@
 ;;
 ;; All rights are reserved
 
-FCB:    equ $5005c ; default FCB placement
-BUFF:   equ $50080
+
+;; ----------------------------------------------------------------------------
+
+FCB:    equ EDOS_BASE + $5c ; default FCB placement
+BUFF:   equ EDOS_BASE + $80
 
 ;; Prepare system vars on start application
 ;; Reimplements CCP behavior

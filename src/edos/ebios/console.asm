@@ -4,7 +4,7 @@
 ;; All rights are reserved
 
 bios_const:
-    ld.lil hl, ($50000 + keycode_ptr)
+    ld.lil hl, (keycode_ptr)
     ld.lil a, (hl)
     or a 
     ret z
@@ -12,7 +12,10 @@ bios_const:
     ld a, $ff
     ret
 
+
 bios_in:
+;; You shouldn't use application stack(it will broke wordstar, for example)
+;; So, using our BIOS-stack for all places where we'll need stack
     LOCALSP
 @rep:
     MOSCALL MOS_GET_KEY
@@ -22,7 +25,7 @@ bios_in:
     ld c, a
     
     xor a 
-    ld.lil hl, ($50000 + keycode_ptr)
+    ld.lil hl, (keycode_ptr)
     ld.lil (hl), a
 
     ld a, c

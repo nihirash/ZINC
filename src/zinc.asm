@@ -5,11 +5,17 @@
 ;;
 ;; All rights are reserved
 
+
+;; This file is entry point from MOS
+
+;; ----------------------------------------------------------------------------
+
+    include "config.asm"
+
     ASSUME ADL=1
-;; Why? Because I can
 MAX_ARGS: EQU 15
 
-    org $40000
+    org ZINC_BASE
     jp _start
 bye_ptr:
     jp exit
@@ -25,6 +31,9 @@ argv:
     db 0        ;; VERSION
     db 1        ;; ADL 
 
+
+;; ----------------------------------------------------------------------------
+
 _start:
     push ix
     push iy
@@ -37,6 +46,7 @@ _start:
     or a 
     jp z, no_args
 
+;; building file name for executable
     ld hl, (argv)
     ld de, path_buffer
 @copy:
@@ -49,6 +59,8 @@ _start:
     inc de
 
     jr @copy
+
+;; Appending '.com' extension
 @ext:
     ld hl, ext
     ldi
@@ -59,30 +71,36 @@ _start:
 
     ;; Cleanup vars area
     xor a 
-    ld hl, $50000
-    ld de, $50001
-    ld bc, $100
+    ld hl, EDOS_BASE
+    ld de, EDOS_BASE + 1
+    ld bc, $ff
     ld (hl), a
     ldir
 
-    ld de, $50100
+    ;; Loading executable
+    ld de, EDOS_TPA
     ld hl, path_buffer
     ld a, $01 ; mos_load
     rst.lil $08
     or a
     jp nz, open_error
 
+    ;; Forming FCBs and DMA buffer with arguments
     call prepare_vars
 
+    ;; Coping EDOS to selected 64K window  
     ld hl, os
-    ld de, $5f000
+    ld de, EDOS_ORG
     ld bc, end_of_os - os
     ldir
 
-;;  emulation layer
-    ld a, $5
+;;  Setting base address for legacy mode
+    ld a, EDOS_BASE / $10000
     ld mb, a
-    jp.sis $f003
+;;  Jumping into EDOS
+    jp.sis EDOS_ORG + $3
+
+;; ----------------------------------------------------------------------------
 
 exit:
     ;; Close all opened files
@@ -90,11 +108,13 @@ exit:
     ld a, 0x0b
     rst.lil $08
 
+    ;; Restoring stack
     ld sp, (stack_save)
 
     pop iy
     pop ix
 
+    ;; Cause we're in ADL mode - MB should be restored to zero value
     xor a
     ld mb, a
 
@@ -102,7 +122,7 @@ exit:
     ld bc, 0
     rst.lil $18
 
-    xor a
+    ;; No errors happens, I wish 
     ld hl, 0
     ret
 exit_msg:

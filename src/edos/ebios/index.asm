@@ -5,6 +5,10 @@
 
     include "ebios/macro.asm"
 
+;; BIOS have same layout as usual CP/M BIOS
+;; It's required cause a lot of applications making direct calls 
+;; to BIOS. And this is reason why it should be aligned.
+
 BOOT:	JP	bye		
 WBOOT:	JP	bye
 CONST:	JP	bios_const
@@ -20,8 +24,8 @@ SELDSK:	JP	bios_seldsk
 SETTRK:	JP	nothing
 SETSEC:	JP	nothing
 SETDMA:	JP	bios_dma
-READ:	JP	direct
-WRITE:	JP	direct
+READ:	JP	direct      ;; Your app shouldn't call this function directly. NEVER
+WRITE:	JP	direct      ;; Your app shouldn't call this function directly. NEVER
 PRSTAT:	JP	nothing
 SECTRN:	JP	nothing
 
@@ -30,17 +34,14 @@ nothing:
     ret
 
 direct:
-    LOCALSP
     ld hl, @msg
     ld bc, 0
     xor a
     rst.lil $18
-    xor a
-    RESTORESP
     jp bye
 @msg:
     db 13, 10
-    db "Unsupported direct BIOS call happens!", 13, 10
+    db "Direct disk reading/writing via BIOS aren't supported!", 13, 10
     db "Execution stopped", 13, 10, 0
 
 
@@ -56,7 +57,7 @@ init:
 
     MOSCALL MOS_SYS_VARS
     lea.lil hl, ix + 5 ;; ASCII KEYCODE
-    ld.lil (keycode_ptr+$50000), hl
+    ld.lil (keycode_ptr), hl
 
 ;; Cleaning last keypress on start - no waiting for key on start of some apps 
     xor a
@@ -80,7 +81,7 @@ init:
     ld (IOBYTE), a
 
     call TPA
-    jp.lil $40004
+    jp bye
 
 banner:
     db 13,10, 17, 1

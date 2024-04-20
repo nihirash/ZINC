@@ -3,16 +3,10 @@
 ;;
 ;; All rights are reserved
 
-;; CP/M 2.2 is $22
-;; Personal CP/M-80 is $28
-;; Let be ZINC is $29. 
-;; Cause compatibility target will be 2.x line but it's totally new version
-DOSVER:     equ $29
 
 TDRIVE:     equ $04
 IOBYTE:     equ $03
 TFCB:       equ $5c
-
 
 NFUNC:      equ 40
 
@@ -102,8 +96,8 @@ fun_table:
     dw do_nothing           ; 30  Set file attributes
     dw get_dpb              ; 31  Get DPB address
     dw do_nothing           ; 32  Get user area
-    dw trace                ; 33  Random read
-    dw trace                ; 34  Random write
+    dw fread                ; 33  Random read
+    dw fwrite               ; 34  Random write
     dw trace                ; 35  Compute file size
     dw trace                ; 36  Update random access pointer
     dw do_nothing           ; 37  reset selected disks
@@ -113,7 +107,7 @@ fun_table:
     dw do_nothing           ; 41
 
 bye:
-    jp.lil $40004
+    jp.lil ZINC_EXIT
 
 do_nothing:
     xor a

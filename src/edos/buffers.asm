@@ -1,7 +1,16 @@
-;; I wish I'll have possibility doesn't include this part to final binary :-)
+;; EDOS - Emulation DOS. BDOS emulation layer for ZINC
+;; (c) 2024 Aleksandr Sharikhin
+;;
+;; All rights are reserved
+
+;; This file contains internal variables and buffers for ZINC
+;; They shouldn't be included in final binary and they all undefined by default
 
 dir:
     ds 128
+
+dos_name:
+     ds 12
 
 tmp_fcb:
     ds $10
