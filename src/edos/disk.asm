@@ -102,8 +102,7 @@ scan_ok:
 
     and $7f
     
-    ld (ix + $0f), a
-    
+    ld (ix + FCB_RC), a
 
     ld hl, (ffs_size + 1)
     ld a, (ffs_size)
@@ -115,7 +114,7 @@ scan_ok:
 
     ld a, h
     and 31
-    ld (ix + $0C), a
+    ld (ix + FCB_EX), a
 
     xor a
     ret
@@ -142,7 +141,6 @@ init_dir:
 
 fopen:
     ex de, hl
-    push hl
     call fcb_to_asciiz_name
     ld hl, dos_name
     ld c, FA_READ + FA_WRITE
@@ -150,22 +148,22 @@ fopen:
 
     or a
     jr z, @err
-    pop hl
-    ld de, FCB_S1
+
+    ld hl, (args)
+    ld de, FCB_FP
     add hl, de
     ld (hl), a
 
     xor a
     ret
 @err:
-    pop hl
     ld a, #ff
     ret
 
 
 fcreate:
     ex de, hl
-    push hl
+
     call fcb_to_asciiz_name
     ld hl, dos_name
     ld c, FA_READ + FA_WRITE + FA_CREATE
@@ -173,24 +171,24 @@ fcreate:
 
     or a
     jr z, @err
-    pop hl
-    ld de, FCB_S1
+    ld hl, (args)
+    ld de, FCB_FP
     add hl, de
     ld (hl), a
 
     xor a
     ret
 @err:
-    pop hl
     ld a, #ff
     ret
 
 fclose:
-    ld hl, FCB_S1
+    ld hl, FCB_FP
     add hl, de
     ld a, (hl)
     ld c, a
     MOSCALL MOS_FCLOSE
+
     ret
 
 fdelete:
@@ -201,28 +199,71 @@ fdelete:
     ret
 
 fwrite:
-    ld hl, FCB_S1
+    ld hl, FCB_FP
     add hl, de
     ld a, (hl)
     ld c, a
 
     ld.lil hl, (dma_ptr)
-    ld de, 128
+    ld de, $80
     MOSCALL MOS_FWRITE
-    
-    ld hl, (args)
-    ld bc, FCB_CR
-    add hl, bc
-    inc (hl)
+    call fcb_next_record
 
     xor a
     ret
 
-fread:
-    ld hl, FCB_S1
+clean_dma:
+    ld de, (dma_ptr)
+    ld hl, 1
+    add hl, de
+    ex de, hl    
+
+    ld bc, $7f
+    ld a, $1a
+    ld (hl), a
+    ldir
+
+    ret
+
+fread_rnd:
+    call clean_dma
+
+
+    ld de, (args)
+    ld hl, FCB_FP
     add hl, de
     ld a, (hl)
     ld c, a
+
+    ld de, (args)
+    ld hl, FCB_RN
+    add hl, de
+    ld hl, (hl)
+
+    add.lil hl, hl ; *2
+    add.lil hl, hl ; *4
+    add.lil hl, hl ; *8
+    add.lil hl, hl ; *16
+    add.lil hl, hl ; *32
+    add.lil hl, hl ; *64
+    add.lil hl, hl ; *128
+    ld e, 0
+
+    jr read_offset
+
+fread:
+    call clean_dma
+    
+    ld de, (args)
+
+    ld hl, FCB_FP
+    add hl, de
+    ld a, (hl)
+    ld c, a
+
+    call fcb_calc_offset
+read_offset:
+    MOSCALL MOS_FSEEK
 
     ld.lil hl, (dma_ptr)
     ld de, 128
@@ -233,10 +274,7 @@ fread:
     ld a, 1
     ret z
 @ok:
-    ld hl, (args)
-    ld bc, FCB_CR
-    add hl, bc
-    inc (hl)
+    call fcb_next_record
 
     xor a
     ret

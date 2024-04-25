@@ -40,13 +40,13 @@ _start:
     ld (stack_save), sp
 
     ld ix,argv
-	call _parse_args
-	ld a,c
-	ld (argc),a
+    call _parse_args
+    ld a,c
+    ld (argc),a
     or a 
     jp z, no_args
 
-;; building file name for executable
+    ;; building file name for executable
     ld hl, (argv)
     ld de, path_buffer
 @copy:
@@ -60,7 +60,7 @@ _start:
 
     jr @copy
 
-;; Appending '.com' extension
+    ;; Appending '.com' extension
 @ext:
     ld hl, ext
     ldi
@@ -94,19 +94,25 @@ _start:
     ld bc, end_of_os - os
     ldir
 
-;;  Setting base address for legacy mode
+    call close_all
+
+    ;;  Setting base address for legacy mode
     ld a, EDOS_BASE / $10000
     ld mb, a
-;;  Jumping into EDOS
+    ;;  Jumping into EDOS
     jp.sis EDOS_ORG + $3
 
 ;; ----------------------------------------------------------------------------
 
-exit:
+close_all:
     ;; Close all opened files
     ld c, 0
     ld a, 0x0b
     rst.lil $08
+    ret
+
+exit:
+    call close_all
 
     ;; Restoring stack
     ld sp, (stack_save)
@@ -152,58 +158,58 @@ error:
     jp exit
 
 _parse_args:
-	call _skip_spaces
-	ld bc,0
-	ld b,MAX_ARGS
+    call _skip_spaces
+    ld bc,0
+    ld b,MAX_ARGS
 _parse1:
-	push bc
-	push hl
-	call _get_token
-	ld a,c
-	pop de
-	pop bc
-	and a
-	ret z
+    push bc
+    push hl
+    call _get_token
+    ld a,c
+    pop de
+    pop bc
+    and a
+    ret z
 
-	ld (ix+0),de
-	push hl
-	pop de
-	call _skip_spaces
-	xor a
-	ld (de),a
-	inc ix
-	inc ix
-	inc ix
-	inc c
-	ld a, c
-	cp b
-	jr c,_parse1
-	ret
+    ld (ix+0),de
+    push hl
+    pop de
+    call _skip_spaces
+    xor a
+    ld (de),a
+    inc ix
+    inc ix
+    inc ix
+    inc c
+    ld a, c
+    cp b
+    jr c,_parse1
+    ret
 
 _get_token:
-	ld c,0
+    ld c,0
 @loop:
-	ld a,(hl)
-	or a
-	ret z
+    ld a,(hl)
+    or a
+    ret z
 
-	cp 13
-	ret z
+    cp 13
+    ret z
 
-	cp 32
-	ret z
+    cp 32
+    ret z
 
-	inc hl
-	inc c
+    inc hl
+    inc c
     
-	jr @loop
+    jr @loop
 
 _skip_spaces:
-	ld a,(hl)
-	cp 32
-	ret nz
-	inc hl
-	jr _skip_spaces
+    ld a,(hl)
+    cp 32
+    ret nz
+    inc hl
+    jr _skip_spaces
 
 ext:
     db ".com",0

@@ -6,9 +6,70 @@
 ;; ----------------------------------------------------------------------------
 
 FCB_CR: equ $20  ; Current record
+FCB_RC: equ $0F
 FCB_EX: equ $0c  ; Current record extend 
 FCB_S2: equ $0e  ; Extend high byte
 FCB_S1: equ $0d  ; Reserved :-)
+FCB_RN: equ $21
+
+FCB_FP: equ $19
+
+FCB_MAX_CR: equ $81
+FCB_MAX_EX: equ $32
+FCB_MAX_S2: equ $15
+
+fcb_calc_offset:
+    push ix
+    ld ix, (args)
+    ld h, $80
+    ld l, (IX + FCB_CR)
+    mlt hl
+
+    ld a, (IX + FCB_EX)
+    ld de, $4000
+    or a
+@check:
+    jr z, @exit
+    add.lil hl, de
+    dec a
+    jr @check
+    ;; TODO: Calc S2 too
+@exit:
+    ld e, 0
+    pop ix
+    ret
+
+; IX - FCB
+fcb_next_record:
+    push ix
+    ld ix, (args)
+    ld a, (ix + FCB_CR)
+    inc a
+    cp FCB_MAX_CR
+    jr c, @write_cr
+
+    ld a, 1
+@write_cr:
+    ld (ix + FCB_CR), a
+    jr c, @exit
+
+    ld a, (ix + FCB_EX)
+    inc a
+    cp FCB_MAX_EX 
+    jr c, @write_ex
+
+    xor a
+@write_ex:
+    ld (ix + FCB_EX), a
+    jr c, @exit
+
+    ld a, (ix + FCB_S2)
+    inc a
+    and FCB_MAX_S2
+    ld (ix + FCB_S2), a
+@exit:
+    pop ix
+    ret
 
 ; Converts FCB to ASCIIz filename
 ; HL - FCB pointer

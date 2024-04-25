@@ -92,6 +92,8 @@ read_buf:
 
     ld e, 1
     MOSCALL MOS_EDIT_LINE
+    cp 27
+    jr z, @err
     
     push hl
     ld a, CR
@@ -115,5 +117,9 @@ read_buf:
     ld (hl), a
     
     ld d, 0
+    xor a
+    ret
+@err:
+    ld a, -1
     ret
 

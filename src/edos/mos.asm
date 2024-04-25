@@ -17,6 +17,7 @@ MOS_FOPEN:      equ     $0a
 MOS_FCLOSE:     equ     $0b
 MOS_FREAD:      equ     $1a
 MOS_FWRITE:     equ     $1b
+MOS_FSEEK:      equ     $1c
 
 
 MOS_OPENDIR:    equ     $91
