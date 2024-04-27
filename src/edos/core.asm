@@ -86,7 +86,7 @@ fun_table:
     dw fread                ; 20  fread
     dw fwrite               ; 21  fwrite
     dw fcreate              ; 22  fcreate
-    dw trace                ; 23  frename
+    dw frename              ; 23  frename
     dw get_drives           ; 24  bitmap of drives
     dw get_drive            ; 25  current drive
     dw set_dma              ; 26  set DMA
@@ -97,7 +97,7 @@ fun_table:
     dw get_dpb              ; 31  Get DPB address
     dw do_nothing           ; 32  Get user area
     dw fread_rnd            ; 33  Random read
-    dw fwrite               ; 34  Random write
+    dw fwrite_rnd           ; 34  Random write
     dw trace                ; 35  Compute file size
     dw trace                ; 36  Update random access pointer
     dw do_nothing           ; 37  reset selected disks

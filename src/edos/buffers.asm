@@ -10,7 +10,11 @@ dir:
     ds 128
 
 dos_name:
-     ds 12
+    ds 12
+
+;; Used for renaming
+old_dos_name:
+    ds 12
 
 tmp_fcb:
     ds $10

@@ -120,7 +120,7 @@ scan_ok:
     ret
 
 mask:
-    ds 12, '?'
+    defb 12, '?'
 
 init_dir:
     ld hl, path_buffer
@@ -140,8 +140,19 @@ init_dir:
     ret
 
 fopen:
-    ex de, hl
+    ld hl, (args)
+    ld de, FCB_FP
+    add hl, de
+    ld a, (hl)
+
+    or a
+    jr z, @skip
+    call fclose
+@skip:
+
+    ld hl, (args)
     call fcb_to_asciiz_name
+
     ld hl, dos_name
     ld c, FA_READ + FA_WRITE
     MOSCALL MOS_FOPEN
@@ -160,11 +171,34 @@ fopen:
     ld a, #ff
     ret
 
+frename:
+    ld hl, (args)
+    call fcb_to_asciiz_name
+    
+    ld hl, dos_name
+    ld de, old_dos_name
+    ld bc, 12
+    ldir
+
+    ld hl, (args)
+    ld de, 16
+    add hl, de
+    call fcb_to_asciiz_name
+
+    ld.lil hl, old_dos_name
+    ld.lil de, dos_name
+    MOSCALL MOS_RENAME     
+    or a 
+    ret z
+
+    ld a, #ff
+    ret
 
 fcreate:
-    ex de, hl
+    ld hl, (args)
 
     call fcb_to_asciiz_name
+    
     ld hl, dos_name
     ld c, FA_READ + FA_WRITE + FA_CREATE
     MOSCALL MOS_FOPEN
@@ -183,12 +217,18 @@ fcreate:
     ret
 
 fclose:
+    ld de, (args)
     ld hl, FCB_FP
     add hl, de
     ld a, (hl)
+    or a 
+    ret z
+
     ld c, a
     MOSCALL MOS_FCLOSE
-
+    
+    xor a
+    ld (hl), a
     ret
 
 fdelete:
@@ -198,12 +238,19 @@ fdelete:
     MOSCALL MOS_DELETE
     ret
 
+;; Random write
+fwrite_rnd:
+    call set_rnd_offset
+    jr do_write
+
+;; Sequental write
 fwrite:
     ld hl, FCB_FP
     add hl, de
     ld a, (hl)
     ld c, a
 
+do_write:
     ld.lil hl, (dma_ptr)
     ld de, $80
     MOSCALL MOS_FWRITE
@@ -225,10 +272,7 @@ clean_dma:
 
     ret
 
-fread_rnd:
-    call clean_dma
-
-
+set_rnd_offset:
     ld de, (args)
     ld hl, FCB_FP
     add hl, de
@@ -248,14 +292,20 @@ fread_rnd:
     add.lil hl, hl ; *64
     add.lil hl, hl ; *128
     ld e, 0
+    ret
+
+;; Random read
+fread_rnd:
+    call clean_dma
+    call set_rnd_offset
 
     jr read_offset
 
+;; Sequental read
 fread:
     call clean_dma
     
     ld de, (args)
-
     ld hl, FCB_FP
     add hl, de
     ld a, (hl)
@@ -271,11 +321,10 @@ read_offset:
 
     ld a, d
     or e
-    ld a, 1
+    ld a, $ff
     ret z
-@ok:
-    call fcb_next_record
 
+    call fcb_next_record
     xor a
     ret
 

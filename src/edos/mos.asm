@@ -11,6 +11,7 @@
 ;; API CALLS
 MOS_GET_KEY:    equ     $00
 MOS_DELETE:     equ     $05
+MOS_RENAME:     equ     $06
 MOS_SYS_VARS:   equ     $08
 MOS_EDIT_LINE:  equ     $09
 MOS_FOPEN:      equ     $0a
