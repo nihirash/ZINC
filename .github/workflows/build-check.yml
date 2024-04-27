@@ -8,7 +8,7 @@ on:
 jobs:
     ci-build-check:
         runs-on: [ubuntu-latest]
-        container: nihirash/sjasmplus:x64
+        container: nihirash/ez80asm:x64
         steps:
             - uses: actions/checkout@v4
 
