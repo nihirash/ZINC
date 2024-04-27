@@ -1,0 +1,19 @@
+name: build-check
+run-name: Dry run of building ZINC
+on: 
+    push:
+        branches:
+          - '**'
+          - '!main'
+jobs:
+    ci-build-check:
+        runs-on: [ubuntu-latest]
+        container: nihirash/ez80asm:x64
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Fix ownership
+              run: chown -R $(id -u):$(id -g) $PWD
+
+            - name: Build OS from sources using dockerized ez80asm
+              run: make
