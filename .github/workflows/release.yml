@@ -1,0 +1,43 @@
+name: build-system
+run-name: Build and release ZINC with ez80asm
+on: 
+    push:
+        branches: [ main ]
+jobs:
+    create-release:
+        runs-on: [ubuntu-latest]
+        container: nihirash/ez80asm:x64
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Fix ownership
+              run: chown -R $(id -u):$(id -g) $PWD
+
+            - name: Build OS from sources using dockerized sjasmplus
+              run: make
+            
+            - name: Read version
+              id: version
+              run: echo "version=$(.version)" >> $GITHUB_OUTPUT
+
+            - name: Release
+              id: create_release
+              uses: actions/create-release@v1
+              with:
+                draft: false
+                prerelease: false
+                release_name: CI build ${{ steps.version.outputs.version }}
+                tag_name: ${{ steps.version.outputs.version }}
+              env:
+                GITHUB_TOKEN: ${{ github.token }}
+            
+            - name: Upload artifact
+              uses: actions/upload-release-asset@v1
+              env:
+                GITHUB_TOKEN: ${{ github.token }}
+              with:
+                upload_url: ${{ steps.create_release.outputs.upload_url }}
+                asset_path: "zinc.bin"
+                asset_name: "zinc.bin"
+                asset_content_type: "application/octet-stream"
+              
