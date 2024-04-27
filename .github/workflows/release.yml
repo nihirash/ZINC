@@ -18,7 +18,7 @@ jobs:
             
             - name: Read version
               id: version
-              run: echo "version=$(.version)" >> $GITHUB_OUTPUT
+              run: echo "version=$(cat .version)" >> $GITHUB_OUTPUT
 
             - name: Release
               id: create_release
