@@ -34,3 +34,5 @@ MOS_CWD:        equ     $9e
 FA_READ:        equ     $01
 FA_WRITE:       equ     $02
 FA_CREATE:      equ     $04
+FA_CREATE_ALW:  equ     $08
+FA_OPEN_ALW:    equ     $10

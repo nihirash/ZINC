@@ -20,11 +20,12 @@ LF:         equ $0A
 CR:         equ $0D
     
     include "mos.asm"
-    jp entrypoint
+entrypoint:
+    jp edos
     jp init
 
 ;; "BDOS" entrypoint - routing functions 
-entrypoint:
+edos:
     ld a, c
     ld (fun), a
     cp NFUNC
@@ -34,6 +35,8 @@ entrypoint:
     ld (user_stk), sp
     ld sp, stack
     ei
+    push ix
+    push iy
 
     ld hl, bdos_return
     push hl
@@ -58,6 +61,8 @@ entrypoint:
 
 bdos_return:
     di
+    pop iy 
+    pop ix
     ld sp, (user_stk)
     ei
     ret
@@ -137,5 +142,6 @@ dma_ptr:    dl EDOS_BASE + $80
 user_stk:   dw $00
 
     align $100
+
     include "ebios/index.asm"
     include "buffers.asm"

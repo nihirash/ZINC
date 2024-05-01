@@ -7,6 +7,8 @@
 
 ;;; This trace placeholder allows detect necessary for applications entrypoints
 trace:
+    ld (args), de
+    
     ld a, (fun)
     call num_to_hex
     ld (@fun), de
@@ -24,9 +26,12 @@ trace:
     xor a
     rst.lil $18
 
-    jp bye
+    ld a, (fun)
+    ld c, a
+    ld de, (args)
+    ret
 @msg:
-    db 13, 10, "[!NOT IMPLEMENTED BDOS CALL!] Called function: "
+    db 13, 10, "[!BDOS CALL!] Called function: "
 @fun:
     dw $00
     db " with parameters: "

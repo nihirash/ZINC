@@ -120,7 +120,7 @@ scan_ok:
     ret
 
 mask:
-    defb 12, '?'
+    db "????????????"
 
 init_dir:
     ld hl, path_buffer
@@ -196,6 +196,15 @@ frename:
 
 fcreate:
     ld hl, (args)
+    ld de, FCB_FP
+    add hl, de
+    ld a, (hl)
+
+    or a
+    jr z, @skip
+    call fclose
+@skip:
+    ld hl, (args)
 
     call fcb_to_asciiz_name
     
@@ -205,6 +214,7 @@ fcreate:
 
     or a
     jr z, @err
+
     ld hl, (args)
     ld de, FCB_FP
     add hl, de
@@ -250,12 +260,18 @@ fwrite:
     ld a, (hl)
     ld c, a
 
+    call fcb_calc_offset
 do_write:
+    MOSCALL MOS_FSEEK
+
     ld.lil hl, (dma_ptr)
     ld de, $80
     MOSCALL MOS_FWRITE
+
     call fcb_next_record
 
+    ld hl, 0
+    ld bc, 0
     xor a
     ret
 
@@ -291,7 +307,7 @@ set_rnd_offset:
     add.lil hl, hl ; *32
     add.lil hl, hl ; *64
     add.lil hl, hl ; *128
-    ld e, 0
+    ld de, 0
     ret
 
 ;; Random read
@@ -316,12 +332,12 @@ read_offset:
     MOSCALL MOS_FSEEK
 
     ld.lil hl, (dma_ptr)
-    ld de, 128
+    ld de, $80
     MOSCALL MOS_FREAD
 
     ld a, d
     or e
-    ld a, $ff
+    ld a, $1
     ret z
 
     call fcb_next_record

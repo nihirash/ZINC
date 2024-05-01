@@ -42,7 +42,7 @@ _start:
     ld ix,argv
     call _parse_args
     ld a,c
-    ld (argc),a
+    ld (argc), a
     or a 
     jp z, no_args
 
@@ -113,7 +113,7 @@ close_all:
 
 exit:
     call close_all
-
+    di
     ;; Restoring stack
     ld sp, (stack_save)
 
@@ -127,7 +127,8 @@ exit:
     ld hl, exit_msg
     ld bc, 0
     rst.lil $18
-
+    
+    ei
     ;; No errors happens, I wish 
     ld hl, 0
     ret

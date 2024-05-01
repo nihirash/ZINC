@@ -22,7 +22,7 @@ ZINC_EXIT:  equ ZINC_BASE + 4
 ;; By changing this value you can change used memory page for CP/M application
 EDOS_BASE:  equ $A0000
 ;; Origin address for EDOS(BDOS equivalent in ZINC)
-EDOS_ORG:   equ EDOS_BASE + $f000
+EDOS_ORG:   equ EDOS_BASE + $F500
 ;; TPA area starts here
 EDOS_TPA:   equ EDOS_BASE + $100
 
