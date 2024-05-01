@@ -328,3 +328,39 @@ read_offset:
     xor a
     ret
 
+;; DE - FCB
+calc_size:
+    ex de, hl
+    call fcb_to_asciiz_name
+
+    ld.lil de, dos_name
+    ld.lil hl, ffs_file_struct
+    MOSCALL MOS_FSTAT
+    or a
+    jr nz, @nope
+
+    ld.lil hl, (ffs_size)
+    add.lil hl, hl
+    
+    ld a, l
+    and $7f
+    jr z, @skip
+
+    ld de, $100
+    add.lil hl, de
+@skip:
+    ld.lil (@buff), hl
+
+    ld hl, (args)
+    ld de, FCB_RN
+    add hl, de
+
+    ld de, (@buff + 1)
+    ld (hl), de 
+    xor a
+    ret
+@nope:    
+    ld a, $ff
+    ret
+@buff:
+    dl 0

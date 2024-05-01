@@ -66,9 +66,11 @@ fun_table:
     dw bye                  ; 00  Reset
     dw console_in           ; 01  Console in
     dw console_out          ; 02  Console out
+
     dw trace                ; 03  Aux read
     dw trace                ; 04  Aux write
     dw do_nothing           ; 05  Printer write
+
     dw raw_io               ; 06  Raw IO
     dw get_io_byte          ; 07  Get IO Byte
     dw set_io_byte          ; 08  Set IO Byte
@@ -98,13 +100,13 @@ fun_table:
     dw do_nothing           ; 32  Get user area
     dw fread_rnd            ; 33  Random read
     dw fwrite_rnd           ; 34  Random write
-    dw trace                ; 35  Compute file size
+    dw calc_size            ; 35  Compute file size
     dw trace                ; 36  Update random access pointer
     dw do_nothing           ; 37  reset selected disks
-    dw do_nothing           ; 38  not used in CP/M 2.2
-    dw do_nothing           ; 39  not used in CP/M 2.2
+    dw trace                ; 38  not used in CP/M 2.2
+    dw trace                ; 39  not used in CP/M 2.2
     dw trace                ; 40  fill random access block with zeros
-    dw do_nothing           ; 41
+    dw trace                ; 41
 
 bye:
     jp.lil ZINC_EXIT
