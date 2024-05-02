@@ -5,6 +5,7 @@
 
 get_drives:
     ld hl,1
+    xor a
     ret
 
 get_drive:
@@ -320,18 +321,13 @@ read_offset:
 
     ld a, d
     or e
-    ld a, 1
+    ld a, $01
     ret z
 
     call fcb_next_record
     
     xor a
     ret
-@unwritten:
-
-    ld a, $1
-    ret
-
 
 ;; DE - FCB
 calc_size:
