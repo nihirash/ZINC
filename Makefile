@@ -5,14 +5,13 @@ EDOS=src/edos/edos.bin
 
 all: $(BINARY)
 
-$(BINARY): $(EDOS) $(SOURCES) .version
+$(BINARY): $(EDOS) $(SOURCES)
 	(cd src && ez80asm -i zinc.asm ../$(BINARY))
 
 $(EDOS): $(SOURCES)
+	date '+%Y.%m.%d' >.version
 	(cd src/edos && ez80asm -i -l edos.asm)
 	
-.version:
-	date '+%Y.%m.%d' >.version
 	
 clean:
 	rm -rf $(EDOS) $(BINARY)
