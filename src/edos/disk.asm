@@ -5,6 +5,7 @@
 
 get_drives:
     ld hl,1
+    xor a
     ret
 
 get_drive:
@@ -83,6 +84,9 @@ scan_ok:
     ld hl, ffs_lfn
     call ascciz_to_fcb
 
+    xor a
+    ret 
+
 ;; Calculation file lenght 
 ;; Routine works not very correct, but many CP/M emulators skip this step
 ;; Honestly, not most necessary part of this project :-)
@@ -120,7 +124,7 @@ scan_ok:
     ret
 
 mask:
-    defb 12, '?'
+    db "????????????"
 
 init_dir:
     ld hl, path_buffer
@@ -139,16 +143,9 @@ init_dir:
     MOSCALL MOS_OPENDIR
     ret
 
-fopen:
-    ld hl, (args)
-    ld de, FCB_FP
-    add hl, de
-    ld a, (hl)
-
-    or a
-    jr z, @skip
-    call fclose
-@skip:
+_open:
+    ld c, 0
+    MOSCALL MOS_FCLOSE
 
     ld hl, (args)
     call fcb_to_asciiz_name
@@ -157,18 +154,22 @@ fopen:
     ld c, FA_READ + FA_WRITE
     MOSCALL MOS_FOPEN
 
-    or a
-    jr z, @err
-
-    ld hl, (args)
-    ld de, FCB_FP
+;; Store file pointer
+    ld de, (args)
+    ld hl, FCB_FP
     add hl, de
     ld (hl), a
+    ld c, a
+
+    ret
+
+fopen:
+    call _open
+
+    or a
+    jp z, err
 
     xor a
-    ret
-@err:
-    ld a, #ff
     ret
 
 frename:
@@ -196,39 +197,22 @@ frename:
 
 fcreate:
     ld hl, (args)
-
     call fcb_to_asciiz_name
-    
+
     ld hl, dos_name
     ld c, FA_READ + FA_WRITE + FA_CREATE
     MOSCALL MOS_FOPEN
 
     or a
-    jr z, @err
-    ld hl, (args)
-    ld de, FCB_FP
-    add hl, de
-    ld (hl), a
+    jp z, err
 
     xor a
     ret
-@err:
-    ld a, #ff
-    ret
 
+;; Not it's just dummy implementation - all files will be closed on any file operations
+;; And exit from CP/M emulator
 fclose:
-    ld de, (args)
-    ld hl, FCB_FP
-    add hl, de
-    ld a, (hl)
-    or a 
-    ret z
-
-    ld c, a
-    MOSCALL MOS_FCLOSE
-    
     xor a
-    ld (hl), a
     ret
 
 fdelete:
@@ -240,23 +224,37 @@ fdelete:
 
 ;; Random write
 fwrite_rnd:
+    call _open
+    or a
+    jr z, err
     call set_rnd_offset
     jr do_write
 
 ;; Sequental write
 fwrite:
+    call _open
+    or a
+    jr z, err
+    
     ld hl, FCB_FP
-    add hl, de
-    ld a, (hl)
-    ld c, a
+    ld (hl), a
 
+    call fcb_calc_offset
 do_write:
+    MOSCALL MOS_FSEEK
+
     ld.lil hl, (dma_ptr)
     ld de, $80
     MOSCALL MOS_FWRITE
-    call fcb_next_record
 
+    call fcb_next_record
+    
+    ld hl, 0
+    ld bc, 0
     xor a
+    ret
+err:
+    ld a, #ff
     ret
 
 clean_dma:
@@ -291,11 +289,15 @@ set_rnd_offset:
     add.lil hl, hl ; *32
     add.lil hl, hl ; *64
     add.lil hl, hl ; *128
-    ld e, 0
+    ld de, 0
     ret
 
 ;; Random read
 fread_rnd:
+    call _open
+    or a
+    jp z, err
+
     call clean_dma
     call set_rnd_offset
 
@@ -305,26 +307,61 @@ fread_rnd:
 fread:
     call clean_dma
     
-    ld de, (args)
-    ld hl, FCB_FP
-    add hl, de
-    ld a, (hl)
-    ld c, a
+    call _open
+    or a
+    jp z, err
 
     call fcb_calc_offset
 read_offset:
     MOSCALL MOS_FSEEK
 
     ld.lil hl, (dma_ptr)
-    ld de, 128
+    ld de, $80
     MOSCALL MOS_FREAD
 
     ld a, d
     or e
-    ld a, $ff
+    ld a, $01
     ret z
 
     call fcb_next_record
+    
     xor a
     ret
 
+;; DE - FCB
+calc_size:
+    ex de, hl
+    call fcb_to_asciiz_name
+
+    ld.lil de, dos_name
+    ld.lil hl, ffs_file_struct
+    MOSCALL MOS_FSTAT
+    or a
+    jr nz, @nope
+
+    ld.lil hl, (ffs_size)
+    add.lil hl, hl
+    
+    ld a, l
+    and $7f
+    jr z, @skip
+
+    ld de, $100
+    add.lil hl, de
+@skip:
+    ld.lil (@buff), hl
+
+    ld hl, (args)
+    ld de, FCB_RN
+    add hl, de
+
+    ld de, (@buff + 1)
+    ld (hl), de 
+    xor a
+    ret
+@nope:    
+    ld a, $ff
+    ret
+@buff:
+    dl 0

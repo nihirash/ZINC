@@ -17,7 +17,7 @@ CONOUT:	JP	bios_out
 
 LIST:	JP	nothing
 PUNCH:	JP	nothing
-READER:	JP	nothing
+READER:	JP	reader
 
 HOME:	JP	nothing
 SELDSK:	JP	bios_seldsk
@@ -31,6 +31,10 @@ SECTRN:	JP	nothing
 
 nothing:
     ld a, $ff
+    ret
+
+reader:
+    ld a, 26
     ret
 
 direct:

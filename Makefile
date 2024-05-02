@@ -9,7 +9,7 @@ $(BINARY): $(EDOS) $(SOURCES) .version
 	(cd src && ez80asm -i zinc.asm ../$(BINARY))
 
 $(EDOS): $(SOURCES)
-	(cd src/edos && ez80asm -i edos.asm)
+	(cd src/edos && ez80asm -i -l edos.asm)
 	
 .version:
 	date '+%Y.%m.%d' >.version

@@ -34,7 +34,8 @@ ffs_attr:   ds  1
 ffs_name:   ds  13
 ffs_lfn:    ds  256
 
-    ds 16
-bios_stack:
     ds 32
+bios_stack:
+
+    ds 64
 stack:
