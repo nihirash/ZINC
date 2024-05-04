@@ -60,8 +60,16 @@ init:
     rst.lil $18
 
     MOSCALL MOS_SYS_VARS
-    lea.lil hl, ix + 5 ;; ASCII KEYCODE
+
+    lea.lil hl, ix + VAR_KEYASCII ;; ASCII KEYCODE
     ld.lil (keycode_ptr), hl
+
+    lea.lil hl, ix + VAR_KEYDOWN ;; VKEYDOWN
+    ld.lil (keydown_ptr), hl
+
+    lea.lil hl, ix + VAR_VKEYCOUNT ;; VKEYCOUNT
+    ld.lil (keycount_ptr), hl
+
 
 ;; Cleaning last keypress on start - no waiting for key on start of some apps 
     xor a
@@ -78,7 +86,7 @@ init:
     ld hl, entrypoint
     ld (6), hl
 
-    ld bc, $80
+    ld bc, DEFDMA
     ld (dma_ptr), bc
 
     ld a, 1
@@ -98,6 +106,10 @@ banner:
     include "ebios/console.asm"
     include "ebios/disk.asm"
 
+keycount_ptr:
+    dl 0
+keydown_ptr:
+    dl 0
 keycode_ptr:
     dl 0
 

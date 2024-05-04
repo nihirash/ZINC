@@ -1,6 +1,10 @@
 # Changelog
 
-## 2024.04.02
+## 2024.05.04
+
+ * Console status and reading working fine now
+
+## 2024.05.02
 
  * File leak fixed
 

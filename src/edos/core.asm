@@ -7,6 +7,7 @@
 TDRIVE:     equ $04
 IOBYTE:     equ $03
 TFCB:       equ $5c
+DEFDMA:     equ $80
 
 NFUNC:      equ 40
 
