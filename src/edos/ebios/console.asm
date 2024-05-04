@@ -49,6 +49,6 @@ bios_in:
 bios_out:
     LOCALSP
     ld a, c
-    rst.lil $10
+    call.lil ZINC_TERMOUT
     RESTORESP
     ret

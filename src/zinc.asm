@@ -19,6 +19,8 @@ MAX_ARGS: EQU 15
     jp _start
 bye_ptr:
     jp exit
+term_out_ptr:
+    jp termout
 
 argc:
     db 0
@@ -97,7 +99,7 @@ _start:
     call close_all
 
     ;;  Setting base address for legacy mode
-    ld a, EDOS_BASE / $10000
+    ld a, EDOS_PAGE
     ld mb, a
     ;;  Jumping into EDOS
     jp.sis EDOS_ORG + $3
@@ -221,6 +223,7 @@ path_buffer:
 stack_save:  dl 0
 
     include "cpm-data.asm"
+    include "terminal.asm"
 
 os:
     incbin "edos/edos.bin"

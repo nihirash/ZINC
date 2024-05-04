@@ -113,6 +113,7 @@ init:
     jp bye
 
 banner:
+    db 4
     db 13,10, 17, 1
     db "ZINC is Not CP/M", 13, 10, 17, 2
     db "(c) 2024 Aleksandr Sharikhin", 13, 10, 17, 15

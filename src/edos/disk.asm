@@ -76,15 +76,19 @@ catalog_scan_next:
     jr scan_ok
 
 nope:
-    ld a, $ff
+    ld a, -1
+    ld hl, -1
+    ld bc, -1
     ret
 
 scan_ok:
     ld de, (dma_ptr)
     ld hl, ffs_lfn
     call ascciz_to_fcb
-
+    
     xor a
+    ld hl, 0
+    ld bc, 0
     ret 
 
 ;; Calculation file lenght 

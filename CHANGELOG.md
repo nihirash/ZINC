@@ -2,6 +2,8 @@
 
 ## 2024.05.04
 
+ * Very basic ADM-3 terminal emulation
+
  * "Update random access pointer" call implemented 
 
  * "Printer" now outputs to VPD's printer

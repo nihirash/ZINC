@@ -16,8 +16,9 @@
 
 ;; Replace ZINC_BASE to $40000 for using it from `/bin` path or as standalone application
 ;; Or keep it as usual moslet - emulator is really tiny and works fine here
-ZINC_BASE:  equ $B0000
-ZINC_EXIT:  equ ZINC_BASE + 4
+ZINC_BASE:      equ $B0000
+ZINC_EXIT:      equ ZINC_BASE + 4
+ZINC_TERMOUT:   equ ZINC_EXIT + 4
 
 ;; By changing this value you can change used memory page for CP/M application
 EDOS_BASE:  equ $A0000
@@ -25,6 +26,8 @@ EDOS_BASE:  equ $A0000
 EDOS_ORG:   equ EDOS_BASE + $F500
 ;; TPA area starts here
 EDOS_TPA:   equ EDOS_BASE + $100
+;; MB pointer
+EDOS_PAGE: equ EDOS_BASE / $10000
 
 ;; CP/M 2.2 is $22
 ;; Personal CP/M-80 is $28
