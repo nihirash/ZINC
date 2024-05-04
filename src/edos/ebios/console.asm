@@ -3,38 +3,52 @@
 ;;
 ;; All rights are reserved
 
+
+;; Single source of truth is better 
+keycode:
+    db 0
+
 bios_const:
+    ld.lil hl, (keycount_ptr)
+    ld.lil a, (hl)
+    and a
+    ret z
+
+    ld.lil hl, (keydown_ptr)
+    ld.lil a, (hl)
+    and a
+    ret z
+
     ld.lil hl, (keycode_ptr)
     ld.lil a, (hl)
-    or a 
+    and $7f
+    ld (keycode), a
     ret z
 
     ld a, $ff
     ret
-
 
 bios_in:
 ;; You shouldn't use application stack(it will broke wordstar, for example)
 ;; So, using our BIOS-stack for all places where we'll need stack
     LOCALSP
 @rep:
-    MOSCALL MOS_GET_KEY
-    or a
+    call bios_const
+    and a
     jr z, @rep
     
-    ld c, a
-    
-    xor a 
-    ld.lil hl, (keycode_ptr)
+    xor a
+    ld.lil hl, (keydown_ptr)
     ld.lil (hl), a
 
-    ld a, c
+    ld a, (keycode)
+
     RESTORESP
     ret
 
 bios_out:
     LOCALSP
     ld a, c
-    rst.lil $10
+    call.lil ZINC_TERMOUT
     RESTORESP
     ret

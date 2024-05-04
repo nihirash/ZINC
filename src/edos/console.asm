@@ -45,7 +45,6 @@ raw_io:
     ret z
     jp CONIN
 
-
 get_io_byte:
     ld a, (IOBYTE)
     ret

@@ -1,6 +1,16 @@
 # Changelog
 
-## 2024.04.02
+## 2024.05.04
+
+ * Very basic ADM-3 terminal emulation
+
+ * "Update random access pointer" call implemented 
+
+ * "Printer" now outputs to VPD's printer
+
+ * Console status and reading working fine now
+
+## 2024.05.02
 
  * File leak fixed
 

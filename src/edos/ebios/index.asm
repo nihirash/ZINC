@@ -15,7 +15,7 @@ CONST:	JP	bios_const
 CONIN:	JP	bios_in
 CONOUT:	JP	bios_out
 
-LIST:	JP	nothing
+LIST:	JP	list
 PUNCH:	JP	nothing
 READER:	JP	reader
 
@@ -32,6 +32,23 @@ SECTRN:	JP	nothing
 nothing:
     ld a, $ff
     ret
+
+list:
+    LOCALSP
+    
+    ld a, c
+    ld (@char), a
+    ld hl, @vdu
+    ld bc, 4
+    rst.lil $18
+
+    RESTORESP
+    ret
+@vdu:
+    db 2, 1
+@char:
+    db 0
+    db 3
 
 reader:
     ld a, 26
@@ -60,8 +77,16 @@ init:
     rst.lil $18
 
     MOSCALL MOS_SYS_VARS
-    lea.lil hl, ix + 5 ;; ASCII KEYCODE
+
+    lea.lil hl, ix + VAR_KEYASCII ;; ASCII KEYCODE
     ld.lil (keycode_ptr), hl
+
+    lea.lil hl, ix + VAR_KEYDOWN ;; VKEYDOWN
+    ld.lil (keydown_ptr), hl
+
+    lea.lil hl, ix + VAR_VKEYCOUNT ;; VKEYCOUNT
+    ld.lil (keycount_ptr), hl
+
 
 ;; Cleaning last keypress on start - no waiting for key on start of some apps 
     xor a
@@ -78,7 +103,7 @@ init:
     ld hl, entrypoint
     ld (6), hl
 
-    ld bc, $80
+    ld bc, DEFDMA
     ld (dma_ptr), bc
 
     ld a, 1
@@ -88,6 +113,7 @@ init:
     jp bye
 
 banner:
+    db 4
     db 13,10, 17, 1
     db "ZINC is Not CP/M", 13, 10, 17, 2
     db "(c) 2024 Aleksandr Sharikhin", 13, 10, 17, 15
@@ -98,6 +124,10 @@ banner:
     include "ebios/console.asm"
     include "ebios/disk.asm"
 
+keycount_ptr:
+    dl 0
+keydown_ptr:
+    dl 0
 keycode_ptr:
     dl 0
 

@@ -36,3 +36,7 @@ FA_WRITE:       equ     $02
 FA_CREATE:      equ     $04
 FA_CREATE_ALW:  equ     $08
 FA_OPEN_ALW:    equ     $10
+
+VAR_VKEYCOUNT: equ $19
+VAR_KEYASCII:  equ $05
+VAR_KEYDOWN:   equ $18
