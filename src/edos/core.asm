@@ -74,8 +74,8 @@ fun_table:
     dw console_out          ; 02  Console out
 
     dw trace                ; 03  Aux read
-    dw trace                ; 04  Aux write
-    dw do_nothing           ; 05  Printer write
+    dw print                ; 04  Aux write
+    dw print                ; 05  Printer write
 
     dw raw_io               ; 06  Raw IO
     dw get_io_byte          ; 07  Get IO Byte
@@ -107,7 +107,7 @@ fun_table:
     dw fread_rnd            ; 33  Random read
     dw fwrite_rnd           ; 34  Random write
     dw calc_size            ; 35  Compute file size
-    dw trace                ; 36  Update random access pointer
+    dw calc_random_offset   ; 36  Update random access pointer
     dw do_nothing           ; 37  reset selected disks
     dw trace                ; 38  not used in CP/M 2.2
     dw trace                ; 39  not used in CP/M 2.2
@@ -116,6 +116,11 @@ fun_table:
 
 bye:
     jp.lil ZINC_EXIT
+
+;; Just send byte to VDP "Printer"
+print:
+    ld c, e
+    jp list
 
 do_nothing:
     xor a

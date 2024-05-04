@@ -15,7 +15,7 @@ CONST:	JP	bios_const
 CONIN:	JP	bios_in
 CONOUT:	JP	bios_out
 
-LIST:	JP	nothing
+LIST:	JP	list
 PUNCH:	JP	nothing
 READER:	JP	reader
 
@@ -32,6 +32,23 @@ SECTRN:	JP	nothing
 nothing:
     ld a, $ff
     ret
+
+list:
+    LOCALSP
+    
+    ld a, c
+    ld (@char), a
+    ld hl, @vdu
+    ld bc, 4
+    rst.lil $18
+
+    RESTORESP
+    ret
+@vdu:
+    db 2, 1
+@char:
+    db 0
+    db 3
 
 reader:
     ld a, 26

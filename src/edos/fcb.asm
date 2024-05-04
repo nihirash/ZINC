@@ -39,6 +39,25 @@ fcb_calc_offset:
     pop ix
     ret
 
+calc_random_offset:
+    push ix
+    ld ix, (args)
+
+    ld l, (IX + FCB_EX)
+    ld h, $80
+    mlt hl
+
+    ld d, 0
+    ld e, (IX + FCB_CR)
+
+    add hl, de
+
+    ld (ix + FCB_RN), hl
+
+    pop ix
+    xor a
+    ret
+
 ; IX - FCB
 fcb_next_record:
     push ix

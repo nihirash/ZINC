@@ -2,6 +2,10 @@
 
 ## 2024.05.04
 
+ * "Update random access pointer" call implemented 
+
+ * "Printer" now outputs to VPD's printer
+
  * Console status and reading working fine now
 
 ## 2024.05.02
