@@ -42,6 +42,12 @@ bios_in:
     ld.lil (hl), a
 
     ld a, (keycode)
+    cp $15
+    jr nz, @ok
+
+    ld a, CNTRLL
+
+@ok:
 
     RESTORESP
     ret

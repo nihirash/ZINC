@@ -11,6 +11,7 @@
 ;; ----------------------------------------------------------------------------
 
     include "config.asm"
+    include "edos/mos.asm"
 
     ASSUME ADL=1
 MAX_ARGS: EQU 15
@@ -82,8 +83,7 @@ _start:
     ;; Loading executable
     ld de, EDOS_TPA
     ld hl, path_buffer
-    ld a, $01 ; mos_load
-    rst.lil $08
+    MOSCALL MOS_LOAD
     or a
     jp nz, open_error
 
@@ -97,6 +97,7 @@ _start:
     ldir
 
     call close_all
+    call term_init
 
     ;;  Setting base address for legacy mode
     ld a, EDOS_PAGE

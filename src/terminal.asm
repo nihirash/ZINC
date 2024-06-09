@@ -10,25 +10,52 @@
 ;; Emulates simple ADM-3a like terminal
 ;; It's good enough and fast
 
-TERM_HOME:  equ $01
-TERM_LEFT:  equ $08
-TERM_CLS:   equ $0C
-TERM_UP:    equ $14
-TERM_LEFT2: equ $16
-TERM_RIGHT: equ $17
-TERM_CLINE: equ $18
-TERM_CLS2:  equ $1A
-TERM_ESC:   equ $1B
+TERM_HOME:   equ $01
+TERM_BELL:   equ $07
+TERM_LEFT:   equ $08
+TERM_FF:     equ $0C
+TERM_UP:     equ $14
+TERM_LEFT2:  equ $16
+TERM_RIGHT:  equ $17
+TERM_CLINE:  equ $18
+TERM_CLS2:   equ $1A
+TERM_ESC:    equ $1B
+TERM_SWITCH: equ $ff
 
     macro VDU byte
     ld a, byte
     rst.lil $10
     endmacro
 
+;; Little preparation for work - setting variables and other things
+term_init:
+    push ix
+    MOSCALL MOS_SYS_VARS
+
+    lea hl, ix + VAR_CURSORX
+    ld (term_pos), hl
+
+    lea hl, ix + VAR_SCRWIDTH
+    ld (term_size), hl
+
+    lea hl, ix + VAR_VDP_DONE
+    ld (cmd_done), hl
+
+    pop ix
+
+    ld hl, @msg
+    ld bc, 0
+    xor a
+    rst.lil $18
+
+    ret
+@msg:
+    db 13,10, "ADM-3a compatible terminal emulation started", 0
+
+
 termout:
     call _putc
 term_fsm: equ $ - 3
-
     ret.lil
 
 _cls:
@@ -44,19 +71,60 @@ _left:
     ret
 _up:
     VDU 11
-    ret
+    ret 
 _right:
     VDU 9
+    ret
+
+_bell:
+    VDU 7
     ret
 
 _esc:
     cp '='
     jr z, @load_coords
-;; You can add some ESC codes here
 
+;; Disable terminal emulation routine
+    cp TERM_SWITCH
+    jr z, @term_switch
+
+;; You can add some ESC codes here
     jr exit_fsm
 @load_coords:
     ld hl, _loadx 
+    ld (term_fsm), hl
+    ret
+@term_switch:
+    ld hl, _vdp
+    ld (term_fsm), hl
+    ret
+
+_vdp:
+    cp TERM_ESC
+    jr z, @vpd_esc
+
+    rst.lil $10
+    ret
+@vpd_esc:
+    ld hl, _vdp_esc
+    ld (term_fsm), hl
+    ret
+
+_vdp_esc:
+    cp TERM_SWITCH
+    jr z, @back_to_emul
+
+    push af
+    ld a, TERM_ESC
+    rst.lil $10
+    pop af
+    rst.lil $10
+
+    ld hl, _vdp
+    ld (term_fsm), hl
+    ret
+@back_to_emul:
+    ld hl, _putc
     ld (term_fsm), hl
     ret
 
@@ -88,7 +156,8 @@ exit_fsm:
     ret
 
 _putc:
-    and $7f
+    cp TERM_FF
+    jp z, _right
 
     cp ' '
     jr nc, @draw
@@ -98,6 +167,9 @@ _putc:
 
     cp 10
     jr z, @draw
+
+    cp TERM_BELL
+    jp z, _bell
 
 ;; Move cursor
     cp TERM_LEFT
@@ -109,14 +181,17 @@ _putc:
     cp TERM_RIGHT
     jp z, _right
 
+
 ;; Home cursor
     cp TERM_HOME
     jp z, _home
-;; Clear screen
-    cp TERM_CLS
-    jp z, _cls
+
+;; Clear screen    
     cp TERM_CLS2
     jp z, _cls
+
+    cp TERM_CLINE
+    jp z, _clear_line
 
 ;; ESC control sequences 
     cp TERM_ESC
@@ -134,6 +209,80 @@ _putc:
     ld (term_fsm), hl
     ret
 
+
+;; Clear current line. Mostly cause KayPro - many softwares except that this command is implemented
+;; Even if original ADM-3A haven't it
+_clear_line:
+    xor a 
+    ld mb, a
+    ld hl, (cmd_done)
+    ld (hl), a
+
+    ld hl, @prepare
+    ld bc, 3
+    rst.lil $18
+
+    call @cmd_result
+
+    xor a
+    ld (hl), a
+
+    ld hl, @prepare2
+    ld bc, 3
+    rst.lil $18
+    call @cmd_result
+
+    ld hl, (term_pos)
+    ld a, (hl)
+    ld (@coords), a
+    inc hl
+    ld a, (hl)
+    ld (@coords + 1), a
+
+    ld hl, @cmd
+    ld bc, 3
+    rst.lil $18
+
+    ld hl, (term_size)
+    ld a, (hl)
+    ld c, a
+    ld a, (@coords)
+    ld b, a
+    ld a, c
+    sub b
+    ld b, a
+@loop:
+    push bc
+    VDU ' '
+    pop bc
+    djnz @loop
+
+    ld hl, @cmd
+    ld bc, 3
+    rst.lil $18    
+
+    ld a, EDOS_PAGE
+    ld mb, a
+    ret
+;; It's more robust way be sure that our fetch command was executed
+@cmd_result:
+    ld hl, (cmd_done)
+@wait:
+    ld a, (hl)
+    and a 
+    jr z, @wait
+    ret
+@prepare:
+    db 23, 0, $86
+@prepare2:
+    db 23, 0, $82
+@cmd:
+    db 31
+@coords:
+    db 0
+    db 0
+
+
 set_pos_cmd:
     db 31
 term_y:
@@ -141,4 +290,9 @@ term_y:
 term_x:
     db 0
 
+cmd_done:
+    dl 0
+term_pos:
+    dl 0
+term_size:
     dl 0

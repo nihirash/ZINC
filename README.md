@@ -19,6 +19,38 @@ zinc mbasic test
 
 You shouldn't specify file extension for executable file(`.com` will be added automatically) and directory should no contain files with long file names.
 
+## Terminal emulation layer
+
+Currently, it supports "ADM-3a"-like compatible terminal emulation routines(like KayPro or some other computers). 
+
+It also allows disable(and re-enable terminal emulation routines) with `27, 255`(two bytes, 27 in decimal first, 255 in decimal secord) character sequence. If you disable terminal emulation routines you'll have possibility use all Agon's VDP commands, including graphics, sounds etc. Also you can get back to terminal emulation mode by same sequence. 
+
+### Control sequences and codes
+
+ * `0x01` - Home cursor
+
+ * `0x07` - Bell(makes single beep)
+
+ * `0x08` - move cursor left on one character
+
+ * `0x0C` - move cursor right on one character
+
+ * `0x14` - move cursor up on one character
+
+ * `0x16` - move cursor left on one character
+
+ * `0x17` - move cursor right on one character
+
+ * `0x18` - clean current line(after current cursor position)
+
+ * `0x1A` - clean screen
+
+ * `0x1B` - ESCAPE control sequences:
+  
+    - `ESC`+`=` - load cursor position(`ESC`+`=`+`y-coordinate`+`x-coordinate`)
+    
+    - `ESC`+`0xFF` - toggle terminal emulation(enable or disable it)
+
 ## Development
 
 You should use fresh version of [agon-ez80asm](https://github.com/envenomator/agon-ez80asm) for building system.
