@@ -116,6 +116,8 @@ close_all:
 
 exit:
     call close_all
+    call term_free
+    
     di
     ;; Restoring stack
     ld sp, (stack_save)

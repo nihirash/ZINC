@@ -43,15 +43,22 @@ term_init:
 
     pop ix
 
-    ld hl, @msg
-    ld bc, 0
-    xor a
+    ld hl, @cmd
+    ld bc, 4
     rst.lil $18
 
     ret
-@msg:
-    db 13,10, "ADM-3a compatible terminal emulation started", 0
+@cmd:
+    db 23, 0, $98, 0
 
+
+term_free:
+    ld hl, @cmd
+    ld bc, 4
+    rst.lil $18
+    ret
+@cmd:
+    db 23, 0, $98, 1
 
 termout:
     call _putc

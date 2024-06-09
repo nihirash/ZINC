@@ -1,5 +1,9 @@
 # Changelog
 
+## Upcoming
+
+ * Disable VDP commands via keypresses for more correct terminal emulation
+
 ## 2024.06.09
 
  * Better ADM-3a terminal emulation
