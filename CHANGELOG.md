@@ -1,5 +1,11 @@
 # Changelog
 
+## 2024.06.09
+
+ * Better ADM-3a terminal emulation
+
+ * Possibility disable it and use VDP commands
+
 ## 2024.05.04
 
  * Very basic ADM-3 terminal emulation
