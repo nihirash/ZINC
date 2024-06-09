@@ -10,6 +10,7 @@
 
 ;; API CALLS
 MOS_GET_KEY:    equ     $00
+MOS_LOAD:       equ     $01
 MOS_DELETE:     equ     $05
 MOS_RENAME:     equ     $06
 MOS_SYS_VARS:   equ     $08
@@ -37,6 +38,10 @@ FA_CREATE:      equ     $04
 FA_CREATE_ALW:  equ     $08
 FA_OPEN_ALW:    equ     $10
 
-VAR_VKEYCOUNT: equ $19
+VAR_VDP_DONE:  equ $04
 VAR_KEYASCII:  equ $05
+VAR_CURSORX:   equ $07
+VAR_CURSORY:   equ $08
+VAR_SCRWIDTH:  equ $13
 VAR_KEYDOWN:   equ $18
+VAR_VKEYCOUNT: equ $19

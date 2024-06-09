@@ -6,7 +6,22 @@
 ;; Works similar to real BDOS
 console_in:
     call CONIN
-    call check_char
+
+    cp CR
+    ret z
+    
+    cp LF
+    ret z
+    
+    cp TAB
+    ret z
+    
+    cp BS
+    ret z    
+    
+    ret z
+
+    cp ' '
     ret c          ;; Do not echo some symbols
 
     push af
@@ -14,18 +29,6 @@ console_in:
     call console_out
     pop af
     
-    ret
-
-check_char:
-    cp CR
-    ret z
-    cp LF
-    ret z
-    cp TAB
-    ret z
-    cp BS
-    ret z
-    cp ' '
     ret
 
 ;; I think we can here skip a bit complex things

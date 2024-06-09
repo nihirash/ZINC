@@ -18,8 +18,9 @@ CNTRLE:     equ $05
 BS:         equ $08
 TAB:        equ $09
 LF:         equ $0A
+CNTRLL:     equ $0C
 CR:         equ $0D
-    
+
     include "mos.asm"
 entrypoint:
     jp edos
