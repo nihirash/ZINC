@@ -20,8 +20,9 @@ MAX_ARGS: EQU 15
     jp _start
 bye_ptr:
     jp exit
-term_out_ptr:
     jp termout
+    jp termstatus
+    jp termin
 
 argc:
     db 0
@@ -128,12 +129,13 @@ exit:
     ;; Cause we're in ADL mode - MB should be restored to zero value
     xor a
     ld mb, a
+    ei
 
     ld hl, exit_msg
     ld bc, 0
+    xor a
     rst.lil $18
     
-    ei
     ;; No errors happens, I wish 
     ld hl, 0
     ret
@@ -147,7 +149,7 @@ no_args:
     jr error
 @msg:
     db 13, 10, "Usage: ", 13, 10
-    db "  runcpm <executable> <args>", 13, 10, 0
+    db "  zinc <executable> <args>", 13, 10, 0
 
 open_error:
     ld hl, @msg
@@ -227,7 +229,10 @@ stack_save:  dl 0
 
     include "cpm-data.asm"
     include "terminal.asm"
+    include "uart.asm"
 
 os:
     incbin "edos/edos.bin"
 end_of_os:
+
+    include "options.asm"

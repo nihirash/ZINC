@@ -3,24 +3,6 @@
 ;;
 ;; All rights are reserved
 
-
-TDRIVE:     equ $04
-IOBYTE:     equ $03
-TFCB:       equ $5c
-DEFDMA:     equ $80
-
-NFUNC:      equ 40
-
-TPA:        equ $100
-
-CNTRLC:     equ $03
-CNTRLE:     equ $05
-BS:         equ $08
-TAB:        equ $09
-LF:         equ $0A
-CNTRLL:     equ $0C
-CR:         equ $0D
-
     include "mos.asm"
 entrypoint:
     jp edos
@@ -74,7 +56,7 @@ fun_table:
     dw console_in           ; 01  Console in
     dw console_out          ; 02  Console out
 
-    dw trace                ; 03  Aux read
+    dw READER               ; 03  Aux read
     dw print                ; 04  Aux write
     dw print                ; 05  Printer write
 

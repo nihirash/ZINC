@@ -4,6 +4,10 @@
 
  * Disable VDP commands via keypresses for more correct terminal emulation
 
+ * All terminal code moved out of BIOS
+
+ * UART1 is accessible via IOByte
+
 ## 2024.06.09
 
  * Better ADM-3a terminal emulation

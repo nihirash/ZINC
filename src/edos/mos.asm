@@ -17,6 +17,10 @@ MOS_SYS_VARS:   equ     $08
 MOS_EDIT_LINE:  equ     $09
 MOS_FOPEN:      equ     $0a
 MOS_FCLOSE:     equ     $0b
+MOS_UOPEN:      equ     $15
+MOS_UCLOSE:     equ     $16
+MOS_UGETC:      equ     $17
+MOS_UPUTC:      equ     $18
 MOS_GETFIL:     equ     $19
 MOS_FREAD:      equ     $1a
 MOS_FWRITE:     equ     $1b
