@@ -6,7 +6,19 @@
 ;; Works similar to real BDOS
 console_in:
     call CONIN
+    ld l, a
 
+    call check
+    ret c
+
+    push af
+    ld c, a
+    call CONOUT
+    pop af
+    
+    ret
+
+check:
     cp CR
     ret z
     
@@ -18,35 +30,41 @@ console_in:
     
     cp BS
     ret z    
-    
-    ret z
 
     cp ' '
-    ret c          ;; Do not echo some symbols
-
-    push af
-    ld c,a
-    call console_out
-    pop af
-    
-    ret
+    ret 
 
 ;; I think we can here skip a bit complex things
 console_out:
+    ld a, (args)
+    ld c, a
     jp CONOUT
 
+
+console_status:
+    call CONST
+    and a
+;; Fixes LU310.COM
+    ld l, a
+    ld h, a
+    ld c, a
+    ld b, a
+    ret
+
 raw_io:
-    ld a, c
+    ld a, (args)
     inc a
-    jr z, @input
-    inc a
-    jp z, CONST
-    jp CONOUT
-@input:
+    jr nz, @out
+
     call CONST
     or a
     ret z
+
     jp CONIN
+@out:
+    ld a, (args)
+    ld c, a
+    jp CONOUT
 
 get_io_byte:
     ld a, (IOBYTE)

@@ -13,9 +13,11 @@ uart_init:
 uart_status:
 	in0 a, (UART_STATUS_REG)
 	and UART_LSR_RDY
+	ld l, a
 	ret.lil z
     
 	ld a, $ff
+	ld l, a
 	ret.lil    
 
 uart_in:
@@ -36,5 +38,4 @@ uart_out:
 
 	xor a
 	ret.lil
-
 

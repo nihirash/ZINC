@@ -117,9 +117,11 @@ close_all:
 
 exit:
     call close_all
-    call term_free
-    
     di
+    xor a
+    ld mb, a
+
+    call term_free
     ;; Restoring stack
     ld sp, (stack_save)
 
@@ -127,9 +129,6 @@ exit:
     pop ix
 
     ;; Cause we're in ADL mode - MB should be restored to zero value
-    xor a
-    ld mb, a
-    ei
 
     ld hl, exit_msg
     ld bc, 0
@@ -138,6 +137,7 @@ exit:
     
     ;; No errors happens, I wish 
     ld hl, 0
+    ei
     ret
 exit_msg:
     db 13, 10

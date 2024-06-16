@@ -65,7 +65,7 @@ fun_table:
     dw set_io_byte          ; 08  Set IO Byte
     dw write_str            ; 09  PrintStr$
     dw read_buf             ; 10  Buffered read
-    dw CONST                ; 11  Console status
+    dw console_status       ; 11  Console status
     dw dos_ver              ; 12  CP/M Version
     dw do_nothing           ; 13  Reset disks
     dw do_nothing           ; 14  Set drive

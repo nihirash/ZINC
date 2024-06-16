@@ -59,14 +59,16 @@ term_init:
 
 
 term_free:
-    ld hl, @cmd
-    ld bc, 4
+    MOSCALL MOS_UCLOSE
+
+    ld hl, term_free_cmd
+    ld bc, term_free_cmd_end - term_free_cmd
     rst.lil $18
     
-    MOSCALL MOS_UCLOSE
     ret
-@cmd:
+term_free_cmd:
     db 23, 0, $98, 1
+term_free_cmd_end:
 
 termstatus:
     ld a, (IOBYTE + EDOS_BASE)
@@ -87,9 +89,11 @@ console_status:
     ld a, (hl)
     and $7f
     ld (keycode), a
+    ld l, a
     ret.lil z
 
     ld a, $ff
+    ld l, a
     ret.lil
 
 termin:
@@ -98,8 +102,20 @@ termin:
     jp z, uart_in
 console_in:
 @rep:
-    call.lil termstatus
+    ld hl, (keycount_ptr)
+    ld a, (hl)
     and a
+    jr z, @rep
+
+    ld hl, (keydown_ptr)
+    ld a, (hl)
+    and a
+    jr z, @rep
+
+    ld hl, (keycode_ptr)
+    ld a, (hl)
+    and $7f
+    ld (keycode), a
     jr z, @rep
     
     xor a
