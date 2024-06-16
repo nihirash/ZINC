@@ -19,6 +19,8 @@
 ZINC_BASE:      equ $B0000
 ZINC_EXIT:      equ ZINC_BASE + 4
 ZINC_TERMOUT:   equ ZINC_EXIT + 4
+ZINC_TERMST:    equ ZINC_TERMOUT + 4
+ZINC_TERMIN:    equ ZINC_TERMST + 4
 
 ;; By changing this value you can change used memory page for CP/M application
 EDOS_BASE:  equ $A0000
@@ -34,3 +36,21 @@ EDOS_PAGE: equ EDOS_BASE / $10000
 ;; Let be ZINC is $29. 
 ;; Cause compatibility target will be 2.x line but it's totally new version
 DOSVER:     equ $29
+
+;; CP/M variables
+TDRIVE:     equ $04
+IOBYTE:     equ $03
+TFCB:       equ $5c
+DEFDMA:     equ $80
+
+NFUNC:      equ 40
+
+TPA:        equ $100
+
+CNTRLC:     equ $03
+CNTRLE:     equ $05
+BS:         equ $08
+TAB:        equ $09
+LF:         equ $0A
+CNTRLL:     equ $0C
+CR:         equ $0D

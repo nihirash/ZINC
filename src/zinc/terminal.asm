@@ -29,7 +29,6 @@ TERM_SWITCH: equ $ff
 
 ;; Little preparation for work - setting variables and other things
 term_init:
-    push ix
     MOSCALL MOS_SYS_VARS
 
     lea hl, ix + VAR_CURSORX
@@ -41,19 +40,100 @@ term_init:
     lea hl, ix + VAR_VDP_DONE
     ld (cmd_done), hl
 
-    pop ix
+    lea hl, ix + VAR_KEYASCII ;; ASCII KEYCODE
+    ld (keycode_ptr), hl
 
-    ld hl, @msg
-    ld bc, 0
-    xor a
+    lea hl, ix + VAR_KEYDOWN ;; VKEYDOWN
+    ld (keydown_ptr), hl
+
+    lea hl, ix + VAR_VKEYCOUNT ;; VKEYCOUNT
+    ld (keycount_ptr), hl
+
+    ld hl, @cmd
+    ld bc, 4
     rst.lil $18
 
-    ret
-@msg:
-    db 13,10, "ADM-3a compatible terminal emulation started", 0
+    jp uart_init
+@cmd:
+    db 23, 0, $98, 0
 
+
+term_free:
+    MOSCALL MOS_UCLOSE
+
+    ld hl, term_free_cmd
+    ld bc, term_free_cmd_end - term_free_cmd
+    rst.lil $18
+    
+    ret
+term_free_cmd:
+    db 23, 0, $98, 1
+term_free_cmd_end:
+
+termstatus:
+    ld a, (IOBYTE + EDOS_BASE)
+    and 3
+    jp z, uart_status
+console_status:
+    ld hl, (keycount_ptr)
+    ld a, (hl)
+    and a
+    ret.lil z
+
+    ld hl, (keydown_ptr)
+    ld a, (hl)
+    and a
+    ret.lil z
+
+    ld hl, (keycode_ptr)
+    ld a, (hl)
+    and $7f
+    ld (keycode), a
+    ret.lil z
+
+    ld a, $ff
+    ret.lil
+
+termin:
+    ld a, (IOBYTE + EDOS_BASE)
+    and 3
+    jp z, uart_in
+console_in:
+@rep:
+    ld hl, (keycount_ptr)
+    ld a, (hl)
+    and a
+    jr z, @rep
+
+    ld hl, (keydown_ptr)
+    ld a, (hl)
+    and a
+    jr z, @rep
+
+    ld hl, (keycode_ptr)
+    ld a, (hl)
+    and $7f
+    ld (keycode), a
+    jr z, @rep
+    
+    xor a
+    ld hl, (keydown_ptr)
+    ld (hl), a
+
+    ld a, (keycode)
+    cp $15
+    jr nz, @ok
+    ld a, CNTRLL
+
+@ok:
+    ret.lil
 
 termout:
+    ld a, (IOBYTE + EDOS_BASE)
+    and 3
+    ld a, c
+    jp z, uart_out
+console_out:
     call _putc
 term_fsm: equ $ - 3
     ret.lil
@@ -296,3 +376,13 @@ term_pos:
     dl 0
 term_size:
     dl 0
+
+
+keycount_ptr:
+    dl 0
+keydown_ptr:
+    dl 0
+keycode_ptr:
+    dl 0
+keycode:
+    db 0

@@ -11,7 +11,7 @@
 ;; ----------------------------------------------------------------------------
 
     include "config.asm"
-    include "edos/mos.asm"
+    include "../mos.asm"
 
     ASSUME ADL=1
 MAX_ARGS: EQU 15
@@ -20,8 +20,9 @@ MAX_ARGS: EQU 15
     jp _start
 bye_ptr:
     jp exit
-term_out_ptr:
     jp termout
+    jp termstatus
+    jp termin
 
 argc:
     db 0
@@ -49,12 +50,20 @@ _start:
     or a 
     jp z, no_args
 
+    ld hl, config_file
+    ld de, options
+    ld bc, options_end - options
+    MOSCALL MOS_LOAD
+
     ;; building file name for executable
     ld hl, (argv)
     ld de, path_buffer
 @copy:
     ld a, (hl)
     or a
+    jr z, @ext
+
+    cp '.'
     jr z, @ext
 
     ld (de), a
@@ -117,6 +126,10 @@ close_all:
 exit:
     call close_all
     di
+    xor a
+    ld mb, a
+
+    call term_free
     ;; Restoring stack
     ld sp, (stack_save)
 
@@ -124,16 +137,15 @@ exit:
     pop ix
 
     ;; Cause we're in ADL mode - MB should be restored to zero value
-    xor a
-    ld mb, a
 
     ld hl, exit_msg
     ld bc, 0
+    xor a
     rst.lil $18
     
-    ei
     ;; No errors happens, I wish 
     ld hl, 0
+    ei
     ret
 exit_msg:
     db 13, 10
@@ -145,7 +157,7 @@ no_args:
     jr error
 @msg:
     db 13, 10, "Usage: ", 13, 10
-    db "  runcpm <executable> <args>", 13, 10, 0
+    db "  zinc <executable> <args>", 13, 10, 0
 
 open_error:
     ld hl, @msg
@@ -218,6 +230,9 @@ _skip_spaces:
 ext:
     db ".com",0
 
+config_file:
+    db "/mos/zinc.cfg", 0
+
 path_buffer:
     ds 13
 
@@ -225,7 +240,10 @@ stack_save:  dl 0
 
     include "cpm-data.asm"
     include "terminal.asm"
+    include "uart.asm"
 
 os:
     incbin "edos/edos.bin"
 end_of_os:
+
+    include "options.asm"

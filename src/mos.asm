@@ -1,4 +1,6 @@
-;; EDOS - Emulation DOS. BDOS emulation layer for ZINC
+;; ZINC is Not CP/M
+;;
+;; CP/M compatibility layer for Agon's MOS
 ;; (c) 2024 Aleksandr Sharikhin
 ;;
 ;; All rights are reserved
@@ -8,15 +10,27 @@
     rst.lil $08
     endmacro
 
+    macro PRINTZ ptr
+    ld hl, ptr
+    ld bc, 0
+    xor a
+    rst.lil $18
+    endmacro
+
 ;; API CALLS
 MOS_GET_KEY:    equ     $00
 MOS_LOAD:       equ     $01
+MOS_SAVE:       equ     $02
 MOS_DELETE:     equ     $05
 MOS_RENAME:     equ     $06
 MOS_SYS_VARS:   equ     $08
 MOS_EDIT_LINE:  equ     $09
 MOS_FOPEN:      equ     $0a
 MOS_FCLOSE:     equ     $0b
+MOS_UOPEN:      equ     $15
+MOS_UCLOSE:     equ     $16
+MOS_UGETC:      equ     $17
+MOS_UPUTC:      equ     $18
 MOS_GETFIL:     equ     $19
 MOS_FREAD:      equ     $1a
 MOS_FWRITE:     equ     $1b
