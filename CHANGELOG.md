@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming
+## 2024.06.16
 
  * Uart parameters can be configured with "zinc-setup" configuration utility
 
