@@ -3,7 +3,7 @@
 ;;
 ;; All rights are reserved
 
-    include "mos.asm"
+    include "../../mos.asm"
 entrypoint:
     jp edos
     jp init

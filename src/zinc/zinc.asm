@@ -11,7 +11,7 @@
 ;; ----------------------------------------------------------------------------
 
     include "config.asm"
-    include "edos/mos.asm"
+    include "../mos.asm"
 
     ASSUME ADL=1
 MAX_ARGS: EQU 15
@@ -50,12 +50,20 @@ _start:
     or a 
     jp z, no_args
 
+    ld hl, config_file
+    ld de, options
+    ld bc, options_end - options
+    MOSCALL MOS_LOAD
+
     ;; building file name for executable
     ld hl, (argv)
     ld de, path_buffer
 @copy:
     ld a, (hl)
     or a
+    jr z, @ext
+
+    cp '.'
     jr z, @ext
 
     ld (de), a
@@ -221,6 +229,9 @@ _skip_spaces:
 
 ext:
     db ".com",0
+
+config_file:
+    db "/mos/zinc.cfg", 0
 
 path_buffer:
     ds 13

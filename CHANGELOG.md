@@ -2,6 +2,12 @@
 
 ## Upcoming
 
+ * Uart parameters can be configured with "zinc-setup" configuration utility
+
+ * EDOS now handles CTRL-C via console status call
+
+ * LU310 was fixed
+
  * Disable VDP commands via keypresses for more correct terminal emulation
 
  * All terminal code moved out of BIOS

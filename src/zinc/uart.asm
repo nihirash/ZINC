@@ -6,18 +6,16 @@ UART_STATUS_REG:    EQU     $D5
 UART_DATA_REG:      EQU     $D0
 
 uart_init:
-	ld ix, serial_cfg
+	ld ix, serial_speed
 	MOSCALL MOS_UOPEN
     ret
 
 uart_status:
 	in0 a, (UART_STATUS_REG)
 	and UART_LSR_RDY
-	ld l, a
 	ret.lil z
     
 	ld a, $ff
-	ld l, a
 	ret.lil    
 
 uart_in:

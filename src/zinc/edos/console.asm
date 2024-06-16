@@ -36,14 +36,31 @@ check:
 
 ;; I think we can here skip a bit complex things
 console_out:
-    ld a, (args)
-    ld c, a
     jp CONOUT
 
 
 console_status:
     call CONST
     and a
+    jr z, @exit
+
+    CALL CONIN
+
+    cp CNTRLC
+    ld a, $ff
+    jr nz, @exit
+
+    ld hl, @msg
+    ld bc, 0
+    xor a
+    rst.lil $18
+
+    jp bye
+@msg:
+    db 13, 10, "CTRL-C pressed, aborting execution", 13, 10, 0
+
+@exit:
+    ld a, 0
 ;; Fixes LU310.COM
     ld l, a
     ld h, a

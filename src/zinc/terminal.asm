@@ -89,11 +89,9 @@ console_status:
     ld a, (hl)
     and $7f
     ld (keycode), a
-    ld l, a
     ret.lil z
 
     ld a, $ff
-    ld l, a
     ret.lil
 
 termin:

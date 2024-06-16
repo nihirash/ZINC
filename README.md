@@ -19,6 +19,12 @@ zinc mbasic test
 
 You shouldn't specify file extension for executable file(`.com` will be added automatically) and directory should no contain files with long file names.
 
+### Using UART1 from CP/M Applications
+
+UART1 is accessible via IOBYTE(you can switch character input/output from terminal emulator to UART1 just changing one byte in RAM). 
+
+Before using UART use `zinc-setup` utility - it's interactive tool for setting UART parameters. 
+
 ## Terminal emulation layer
 
 Currently, it supports "ADM-3a"-like compatible terminal emulation routines(like KayPro or some other computers). 
