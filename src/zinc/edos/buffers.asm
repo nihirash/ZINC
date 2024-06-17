@@ -37,5 +37,9 @@ ffs_lfn:    ds  256
     ds 32
 bios_stack:
 
-    ds 64
+    ds 36
 stack:
+
+empty:
+    ds 128
+end_of_empty:

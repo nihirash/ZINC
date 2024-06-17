@@ -92,10 +92,10 @@ fun_table:
     dw calc_size            ; 35  Compute file size
     dw calc_random_offset   ; 36  Update random access pointer
     dw do_nothing           ; 37  reset selected disks
-    dw trace                ; 38  not used in CP/M 2.2
-    dw trace                ; 39  not used in CP/M 2.2
-    dw trace                ; 40  fill random access block with zeros
-    dw trace                ; 41
+    dw do_nothing           ; 38  not used in CP/M 2.2
+    dw do_nothing           ; 39  not used in CP/M 2.2
+    dw fwrite_zeros         ; 40  fill random access block with zeros
+    dw do_nothing           ; 41
 
 bye:
     jp.lil ZINC_EXIT
@@ -120,7 +120,6 @@ dos_ver:
     ret
 
     include "console.asm"
-    include "trace.asm"
     include "fcb.asm"
     include "disk.asm"
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## Upcoming
+
+ * Tracing of DOS calls removed
+
+ * Fill with zeros call implemented
+
+ * Fixed WordStar 3 file operations
+
 ## 2024.06.16
 
  * Uart parameters can be configured with "zinc-setup" configuration utility

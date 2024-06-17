@@ -21,6 +21,8 @@ FCB_MAX_S2: equ $15
 fcb_calc_offset:
     push ix
     ld ix, (args)
+
+    ld c, (IX + FCB_FP)
     ld h, $80
     ld l, (IX + FCB_CR)
     mlt hl

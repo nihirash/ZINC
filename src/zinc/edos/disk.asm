@@ -210,12 +210,22 @@ fcreate:
     or a
     jp z, err
 
+    ld de, (args)
+    ld hl, FCB_FP
+    add hl, de
+    ld a, (hl)
+    ld c, a
+
+
     xor a
     ret
 
 ;; Not it's just dummy implementation - all files will be closed on any file operations
 ;; And exit from CP/M emulator
 fclose:
+    ld c, 0
+    MOSCALL MOS_FCLOSE
+
     xor a
     ret
 
@@ -225,6 +235,16 @@ fdelete:
     ld hl, dos_name
     MOSCALL MOS_DELETE
     ret
+
+fwrite_zeros:
+    call _open
+    or a
+    jr z, err
+    call set_rnd_offset
+    MOSCALL MOS_FSEEK
+
+    ld.lil hl, empty
+    jp do_write_pointer
 
 ;; Random write
 fwrite_rnd:
@@ -240,14 +260,12 @@ fwrite:
     or a
     jr z, err
     
-    ld hl, FCB_FP
-    ld (hl), a
-
     call fcb_calc_offset
 do_write:
     MOSCALL MOS_FSEEK
 
     ld.lil hl, (dma_ptr)
+do_write_pointer:
     ld de, $80
     MOSCALL MOS_FWRITE
 
