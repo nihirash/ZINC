@@ -1,5 +1,15 @@
 # Changelog
 
+## 2024.06.22
+
+ * BBC Basic partly working with files but still have issues
+
+ * Tracing of DOS calls removed
+
+ * All API calls implemented
+
+ * Fixed WordStar 3 file operations
+
 ## 2024.06.16
 
  * Uart parameters can be configured with "zinc-setup" configuration utility
