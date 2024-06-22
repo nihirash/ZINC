@@ -5,19 +5,29 @@
 
 get_drives:
     ld hl,1
+
     xor a
+    ld b, a
     ret
 
 get_drive:
     xor a
+
+    ld b, a
     ret
 
 set_dma:
     ld (dma_ptr), de
+
+    xor a
+    ld b, a
     ret
 
 get_dpb:
     ld hl, dpb
+
+    xor a
+    ld b, a
     ret
 
 catalog_get_first:
@@ -77,8 +87,8 @@ catalog_scan_next:
 
 nope:
     ld a, -1
+    ld b, a
     ld hl, -1
-    ld bc, -1
     ret
 
 scan_ok:
@@ -87,8 +97,7 @@ scan_ok:
     call ascciz_to_fcb
     
     xor a
-    ld hl, 0
-    ld bc, 0
+    ld b, a
     ret 
 
 ;; Calculation file lenght 
@@ -125,6 +134,7 @@ scan_ok:
     ld (ix + FCB_EX), a
 
     xor a
+    ld b, a
     ret
 
 mask:
@@ -174,6 +184,7 @@ fopen:
     jp z, err
 
     xor a
+    ld b, a
     ret
 
 frename:
@@ -194,6 +205,7 @@ frename:
     ld.lil de, dos_name
     MOSCALL MOS_RENAME     
     or a 
+    ld b, a
     ret z
 
     ld a, #ff
@@ -216,7 +228,6 @@ fcreate:
     ld a, (hl)
     ld c, a
 
-
     xor a
     ret
 
@@ -234,17 +245,9 @@ fdelete:
     call fcb_to_asciiz_name
     ld hl, dos_name
     MOSCALL MOS_DELETE
+
+    xor a
     ret
-
-fwrite_zeros:
-    call _open
-    or a
-    jr z, err
-    call set_rnd_offset
-    MOSCALL MOS_FSEEK
-
-    ld.lil hl, empty
-    jp do_write_pointer
 
 ;; Random write
 fwrite_rnd:
@@ -271,12 +274,11 @@ do_write_pointer:
 
     call fcb_next_record
     
-    ld hl, 0
-    ld bc, 0
     xor a
     ret
 err:
     ld a, #ff
+    ld b, a
     ret
 
 clean_dma:
@@ -349,6 +351,7 @@ read_offset:
     call fcb_next_record
     
     xor a
+    ld b, a
     ret
 
 ;; DE - FCB
@@ -380,7 +383,9 @@ calc_size:
 
     ld de, (@buff + 1)
     ld (hl), de 
+    
     xor a
+    ld b, a
     ret
 @nope:    
     ld a, $ff

@@ -71,13 +71,6 @@ init:
 
     call init_dir
 
-    ld hl, empty
-    ld de, empty + 1
-    ld bc, 127
-    xor a 
-    ld (hl), a
-    ldir
-
     ld hl, banner
     ld bc, 0
     xor a

@@ -3,10 +3,6 @@ ZINC - ZINC is Not CP/M
 
 CP/M compatibility layer for Agon's MOS. 
 
-Requires ez80asm 1.6 or later for building it.
-
-**CAUTION** It is early development version - possibly unstable behavior or any issues, use it on your risk.
-
 ## Usage
 
 Download from releases page `zinc.bin`(use only latest release) and copy it to `mos/` directory of your sd card.
@@ -56,6 +52,12 @@ It also allows disable(and re-enable terminal emulation routines) with `27, 255`
     - `ESC`+`=` - load cursor position(`ESC`+`=`+`y-coordinate`+`x-coordinate`)
     
     - `ESC`+`0xFF` - toggle terminal emulation(enable or disable it)
+
+## Known incompatibilities 
+
+ * BBCBasic V - produces CP/M error on almost any non vanilla BDOS implementation(source code shows that it was developed mostly for runinng under RunCPM). 
+  
+  Honestly, I think It will be easier port it to MOS than fix execution under ZINC.
 
 ## Development
 

@@ -60,11 +60,7 @@ console_status:
     db 13, 10, "CTRL-C pressed, aborting execution", 13, 10, 0
 
 @exit:
-    ld a, 0
-;; Fixes LU310.COM
-    ld l, a
-    ld h, a
-    ld c, a
+    xor a
     ld b, a
     ret
 
@@ -81,7 +77,11 @@ raw_io:
 @out:
     ld a, (args)
     ld c, a
-    jp CONOUT
+    call CONOUT
+
+    xor a 
+    ld b, a
+    ret
 
 get_io_byte:
     ld a, (IOBYTE)
@@ -155,6 +155,7 @@ read_buf:
     
     ld d, 0
     xor a
+    ld b, a
     ret
 @err:
     ld a, -1

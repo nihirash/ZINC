@@ -39,7 +39,3 @@ bios_stack:
 
     ds 36
 stack:
-
-empty:
-    ds 128
-end_of_empty:

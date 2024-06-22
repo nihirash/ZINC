@@ -2,9 +2,11 @@
 
 ## Upcoming
 
+ * BBC Basic partly working with files but still have issues
+
  * Tracing of DOS calls removed
 
- * Fill with zeros call implemented
+ * All API calls implemented
 
  * Fixed WordStar 3 file operations
 
