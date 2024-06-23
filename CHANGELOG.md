@@ -1,5 +1,11 @@
 # Changelog
 
+## Upcoming
+ 
+ * Set color control code
+
+ * Terminal emulation minor fixes
+
 ## 2024.06.22
 
  * BBC Basic partly working with files but still have issues

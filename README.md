@@ -50,6 +50,10 @@ It also allows disable(and re-enable terminal emulation routines) with `27, 255`
  * `0x1B` - ESCAPE control sequences:
   
     - `ESC`+`=` - load cursor position(`ESC`+`=`+`y-coordinate`+`x-coordinate`)
+
+    - `ESC` + `f` - load foreground color(`ESC` + `f` + `color number as byte`)
+
+    - `ESC` + `b` - load background color(`ESC` + `b` + `color number as byte`)
     
     - `ESC`+`0xFF` - toggle terminal emulation(enable or disable it)
 

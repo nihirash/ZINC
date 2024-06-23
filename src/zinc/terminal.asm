@@ -20,7 +20,12 @@ TERM_RIGHT:  equ $17
 TERM_CLINE:  equ $18
 TERM_CLS2:   equ $1A
 TERM_ESC:    equ $1B
+TERM_RS:     equ $1E
+
+TERM_COORDS: equ '='
 TERM_SWITCH: equ $ff
+TERM_FG:     equ 'f'
+TERM_BG:     equ 'b'
 
     macro VDU byte
     ld a, byte
@@ -161,15 +166,22 @@ _bell:
     ret
 
 _esc:
-    cp '='
+;; Load coordinates
+    cp TERM_COORDS
     jr z, @load_coords
 
 ;; Disable terminal emulation routine
     cp TERM_SWITCH
     jr z, @term_switch
+;; Load foreground color
+    cp TERM_FG
+    jr z, @term_fg
+;; Load background color
+    cp TERM_BG
+    jr z, @term_bg
 
 ;; You can add some ESC codes here
-    jr exit_fsm
+    jp exit_fsm
 @load_coords:
     ld hl, _loadx 
     ld (term_fsm), hl
@@ -178,7 +190,35 @@ _esc:
     ld hl, _vdp
     ld (term_fsm), hl
     ret
+@term_fg:
+    ld hl, _fg
+    ld (term_fsm), hl
+    ret
+@term_bg:
+    ld hl, _bg
+    ld (term_fsm), hl
+    ret
 
+
+_fg:
+    and 63
+    jr set_color
+
+    jp exit_fsm
+
+_bg:
+    and 63
+    xor $80
+set_color:
+    ld c, a
+
+    ld a, 17
+    rst.lil $10
+
+    ld a, c 
+    rst.lil $10
+
+    jp exit_fsm
 _vdp:
     cp TERM_ESC
     jr z, @vpd_esc
@@ -242,10 +282,13 @@ _putc:
     cp ' '
     jr nc, @draw
 
-    cp 13
+    cp TAB
+    jp z, _tab
+
+    cp CR
     jr z, @draw
 
-    cp 10
+    cp LF
     jr z, @draw
 
     cp TERM_BELL
@@ -264,6 +307,8 @@ _putc:
 
 ;; Home cursor
     cp TERM_HOME
+    jp z, _home
+    cp TERM_RS
     jp z, _home
 
 ;; Clear screen    
@@ -289,28 +334,36 @@ _putc:
     ld (term_fsm), hl
     ret
 
+_tab:
+    xor a
+    ld mb, a
+
+    call load_pos
+    ld hl, (term_pos)
+    ld a, (hl)
+@loop:
+    and 15
+    jr z, @exit
+    push af
+    VDU ' '
+    pop af
+    inc a
+    jr @loop
+
+@exit:
+    ld a, EDOS_PAGE
+    ld mb, a
+    ret 
+
 
 ;; Clear current line. Mostly cause KayPro - many softwares except that this command is implemented
 ;; Even if original ADM-3A haven't it
 _clear_line:
     xor a 
     ld mb, a
-    ld hl, (cmd_done)
-    ld (hl), a
 
-    ld hl, @prepare
-    ld bc, 3
-    rst.lil $18
-
-    call @cmd_result
-
-    xor a
-    ld (hl), a
-
-    ld hl, @prepare2
-    ld bc, 3
-    rst.lil $18
-    call @cmd_result
+    call load_pos
+    call load_size
 
     ld hl, (term_pos)
     ld a, (hl)
@@ -344,24 +397,44 @@ _clear_line:
     ld a, EDOS_PAGE
     ld mb, a
     ret
+@cmd:
+    db 31
+@coords:
+    db 0
+    db 0
 ;; It's more robust way be sure that our fetch command was executed
-@cmd_result:
+cmd_result:
     ld hl, (cmd_done)
 @wait:
     ld a, (hl)
     and a 
     jr z, @wait
     ret
-@prepare:
-    db 23, 0, $86
-@prepare2:
-    db 23, 0, $82
-@cmd:
-    db 31
-@coords:
-    db 0
-    db 0
 
+
+load_size:
+    ld hl, (cmd_done)
+    xor a
+    ld (hl), a
+
+    ld hl, @cmd
+    ld bc, 3
+    rst.lil $18
+    jr cmd_result
+@cmd:
+    db 23, 0, $86
+
+load_pos:
+    ld hl, (cmd_done)
+    xor a
+    ld (hl), a
+
+    ld hl, @cmd
+    ld bc, 3
+    rst.lil $18
+    jr cmd_result
+@cmd:
+    db 23, 0, $82
 
 set_pos_cmd:
     db 31

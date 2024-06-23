@@ -49,7 +49,7 @@ TPA:        equ $100
 
 CNTRLC:     equ $03
 CNTRLE:     equ $05
-BS:         equ $08
+BS:         equ $7F
 TAB:        equ $09
 LF:         equ $0A
 CNTRLL:     equ $0C

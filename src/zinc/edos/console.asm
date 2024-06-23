@@ -11,6 +11,9 @@ console_in:
     call check
     ret c
 
+    cp BS
+    ret z
+
     push af
     ld c, a
     call CONOUT
@@ -28,9 +31,6 @@ check:
     cp TAB
     ret z
     
-    cp BS
-    ret z    
-
     cp ' '
     ret 
 
