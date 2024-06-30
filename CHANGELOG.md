@@ -2,6 +2,8 @@
 
 ## Upcoming
  
+ * Now building with ez80asm 1.7
+
  * Set color control code
 
  * Terminal emulation minor fixes
