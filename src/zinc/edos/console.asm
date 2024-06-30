@@ -11,6 +11,9 @@ console_in:
     call check
     ret c
 
+    cp BS
+    ret z
+
     push af
     ld c, a
     call CONOUT
@@ -28,9 +31,6 @@ check:
     cp TAB
     ret z
     
-    cp BS
-    ret z    
-
     cp ' '
     ret 
 
@@ -158,6 +158,11 @@ read_buf:
     ld b, a
     ret
 @err:
-    ld a, -1
-    ret
+    ld hl, @msg
+    ld bc, 0
+    xor a
+    rst.lil $18
 
+    jp bye
+@msg:
+    db 13, 10, "Input interrupted, aborting execution", 13, 10, 0

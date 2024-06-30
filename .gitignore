@@ -1,6 +1,8 @@
 *.lst
 *.bin
-*.com
+*.hex
+*.prn
 emul/
 tmp/
 emul.sh
+src/zinc-shell/

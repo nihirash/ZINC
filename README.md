@@ -50,6 +50,10 @@ It also allows disable(and re-enable terminal emulation routines) with `27, 255`
  * `0x1B` - ESCAPE control sequences:
   
     - `ESC`+`=` - load cursor position(`ESC`+`=`+`y-coordinate`+`x-coordinate`)
+
+    - `ESC` + `f` - load foreground color(`ESC` + `f` + `color number as byte`)
+
+    - `ESC` + `b` - load background color(`ESC` + `b` + `color number as byte`)
     
     - `ESC`+`0xFF` - toggle terminal emulation(enable or disable it)
 
@@ -74,3 +78,5 @@ You can support me via my [Ko-Fi page](https://ko-fi.com/nihirash).
 This project licensed with [Nihirash's Coffeeware License](LICENSE). 
 
 It isn't hard to respect it.
+
+All third-party projects covered with their own licenses.

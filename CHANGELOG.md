@@ -1,5 +1,15 @@
 # Changelog
 
+## Upcoming
+
+ * Buffered read input can be interrupted with ESC key(with application shutdown)
+
+ * Applications directory added
+
+ * Set color control code
+
+ * Terminal emulation minor fixes
+
 ## 2024.06.22
 
  * BBC Basic partly working with files but still have issues
