@@ -66,14 +66,14 @@ term_init:
 term_free:
     MOSCALL MOS_UCLOSE
 
-    ld hl, term_free_cmd
-    ld bc, term_free_cmd_end - term_free_cmd
+    ld hl, @cmd
+    ld bc, @end - @cmd
     rst.lil $18
     
     ret
-term_free_cmd:
+@cmd:
     db 23, 0, $98, 1
-term_free_cmd_end:
+@end:
 
 termstatus:
     ld a, (IOBYTE + EDOS_BASE)

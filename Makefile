@@ -1,5 +1,5 @@
 ASM=ez80asm
-ASM_FLAGS:=-i -l
+ASM_FLAGS:=-i -l -v
 SOURCES:=$(shell find src/zinc -type f -iname  "*.asm")
 BINARY=zinc.bin
 EDOS=src/zinc/edos/edos.bin

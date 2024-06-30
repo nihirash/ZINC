@@ -78,3 +78,5 @@ You can support me via my [Ko-Fi page](https://ko-fi.com/nihirash).
 This project licensed with [Nihirash's Coffeeware License](LICENSE). 
 
 It isn't hard to respect it.
+
+All third-party projects covered with their own licenses.

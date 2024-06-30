@@ -158,6 +158,11 @@ read_buf:
     ld b, a
     ret
 @err:
-    ld a, -1
-    ret
+    ld hl, @msg
+    ld bc, 0
+    xor a
+    rst.lil $18
 
+    jp bye
+@msg:
+    db 13, 10, "Input interrupted, aborting execution", 13, 10, 0

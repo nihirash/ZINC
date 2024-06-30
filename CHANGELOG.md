@@ -1,8 +1,10 @@
 # Changelog
 
 ## Upcoming
- 
- * Now building with ez80asm 1.7
+
+ * Buffered read input can be interrupted with ESC key(with application shutdown)
+
+ * Applications directory added
 
  * Set color control code
 
