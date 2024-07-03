@@ -2,6 +2,8 @@
 
 ## Upcoming
 
+ * ez80asm updated to 1.8 version
+
  * Buffered read input can be interrupted with ESC key(with application shutdown)
 
  * Applications directory added

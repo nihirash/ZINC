@@ -4,9 +4,13 @@ It's important setup your UART speed settings to same mode as ESP8266 module via
 
 All tools working via IOBYTE.
 
+Examples are built with Z80ASM(can be found in `3rd-party` directory).
+
 ## esprst.com - resets your ESP8266 module
 
-Just resets your module and closes all opened connections
+Just resets your module and closes all opened connections.
+
+Simplest example - how to work with UART1 via ZINC.
 
 ## dial.com 
 

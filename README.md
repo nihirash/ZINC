@@ -13,7 +13,9 @@ After this you'll have possibility run CP/M applications with `zinc` command lik
 zinc mbasic test
 ```
 
-You shouldn't specify file extension for executable file(`.com` will be added automatically) and directory should no contain files with long file names.
+You shouldn't specify file extension for executable file(`.com` will be added automatically) and directory should no contain files with long file names. 
+
+**NB!** Please don't specify file names with path. It should be executed in directory where CP/M files are(current directory will be used as emulated disk drive).
 
 ### Using UART1 from CP/M Applications
 
@@ -62,6 +64,8 @@ It also allows disable(and re-enable terminal emulation routines) with `27, 255`
  * BBCBasic V - produces CP/M error on almost any non vanilla BDOS implementation(source code shows that it was developed mostly for runinng under RunCPM). 
   
   Honestly, I think It will be easier port it to MOS than fix execution under ZINC.
+
+ * Buffered input can be interrupted with ESC with application termination(instead CTRL+C in vanilla CP/M)
 
 ## Development
 
