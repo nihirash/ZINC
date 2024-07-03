@@ -1,5 +1,17 @@
 # Changelog
 
+## 2024.07.03
+
+ * ez80asm updated to 1.8 version
+
+ * Buffered read input can be interrupted with ESC key(with application shutdown)
+
+ * Applications directory added(added kermit sources and binary, z80asm and UART1 usage examples)
+
+ * Set color control code
+
+ * Terminal emulation minor fixes
+
 ## 2024.06.22
 
  * BBC Basic partly working with files but still have issues

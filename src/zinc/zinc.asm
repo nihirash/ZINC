@@ -81,11 +81,11 @@ _start:
     ldi
     ldi
 
-    ;; Cleanup vars area
+    ;; Cleanup CP/M memory
     xor a 
     ld hl, EDOS_BASE
     ld de, EDOS_BASE + 1
-    ld bc, $ff
+    ld bc, $fffe
     ld (hl), a
     ldir
 
