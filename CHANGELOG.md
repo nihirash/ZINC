@@ -1,12 +1,12 @@
 # Changelog
 
-## Upcoming
+## 2024.07.03
 
  * ez80asm updated to 1.8 version
 
  * Buffered read input can be interrupted with ESC key(with application shutdown)
 
- * Applications directory added
+ * Applications directory added(added kermit sources and binary, z80asm and UART1 usage examples)
 
  * Set color control code
 
