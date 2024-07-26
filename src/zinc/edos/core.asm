@@ -21,6 +21,7 @@ edos:
     ei
     push ix
     push iy
+    push de
 
     ld hl, bdos_return
     push hl
@@ -45,6 +46,7 @@ edos:
 
 bdos_return:
     di
+    pop de
     pop iy 
     pop ix
     ld sp, (user_stk)

@@ -18,7 +18,7 @@ speed_conf:
     cp '1'
     jr c, speed_conf
 
-    cp '9'
+    cp '9' + 1
     jr nc, speed_conf
 
     sub '0'
@@ -58,9 +58,14 @@ speed_conf:
     ld de, 2400
     jp z, @speed_ok
 
+    cp 8
     ld hl, uart_speed8 + 4
     ld de, 1200
+    jp z, @speed_ok
 
+    ld hl, uart_speed9 + 4
+    ld de, 300
+    
 @speed_ok:
     ld (serial_speed), de
     ld bc, 0
@@ -183,6 +188,9 @@ uart_speed7:
     db " 7) 2400",   13, 10
 uart_speed8:
     db " 8) 1200",   13, 10
+uart_speed9:
+    db " 9) 300", 13, 10
+    
     db 13, 10
     db "Selected speed: "
     db 0
