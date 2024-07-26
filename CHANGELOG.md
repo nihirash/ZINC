@@ -1,5 +1,11 @@
 # Changelog
 
+## 2024.07.26
+
+ * Preserving DE in BDOS calls - very small count of applications waits for this
+
+ * UART can be configured for 300 Bauds 
+
 ## 2024.07.03
 
  * ez80asm updated to 1.8 version
